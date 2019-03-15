@@ -1,0 +1,15 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "extends": ["plugin:react/recommended", "airbnb-base/legacy"],
+  "rules": {
+    "class-methods-use-this": "off",
+    "max-len": ["error", 120]
+  },
+  "parser": "babel-eslint"
+}
