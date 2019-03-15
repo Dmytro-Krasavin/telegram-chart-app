@@ -16,7 +16,8 @@ class Chart extends Component {
   render() {
     const chart = this.props.children;
     const types = chart.types;
-    const lines = Object.keys(types).filter(type => types[type] === LINE_TYPE);
+    const lines = Object.keys(types)
+      .filter(type => types[type] === LINE_TYPE);
     const buttons = lines.map((line, index) => {
       const name = chart.names[line];
       const color = chart.colors[line];
@@ -92,22 +93,27 @@ class Chart extends Component {
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
       const chart = this.props.children;
-      ctx.beginPath();
 
       const types = chart.types;
       const timestamps = this.modifyTimestamps(chart, canvas.width);
       const lines = this.modifyLines(chart, canvas.height);
 
-      lines.forEach(line => ctx.moveTo(timestamps[1], line[1]));
-
       // todo
-      for (let i = 1; i < lines.length - 1; i++) {
-        ctx.lineTo(timestamps, lines[i]);
+      for (let i = 0; i < lines.length; i++) {
+        const lineData = lines[i];
+        const lineLabel = lineData[0];
+        ctx.strokeStyle = chart.colors[lineLabel];
+        ctx.beginPath();
+        ctx.moveTo(timestamps[1], lineData[1]);
+        for (let j = 2; j < lineData.length; j++) {
+          ctx.lineTo(timestamps[j], lineData[j]);
+        }
+        ctx.stroke();
       }
-      ctx.stroke();
 
 
-      const lineNames = Object.keys(types).filter(type => types[type] === LINE_TYPE);
+      const lineNames = Object.keys(types)
+        .filter(type => types[type] === LINE_TYPE);
       const buttons = lineNames.forEach((lineName) => {
         const name = chart.names[lineName];
         const color = chart.colors[lineName];
@@ -126,7 +132,7 @@ class Chart extends Component {
       return types[columnLabel] === TIMESTAMP_TYPE;
     });
 
-    timestamps.shift(); // delete label
+    const label = timestamps.shift(); // delete label
     if (!this.isSortedArray(timestamps)) {
       timestamps.sort((a, b) => a - b);
     }
@@ -134,7 +140,10 @@ class Chart extends Component {
     const min = Math.min(...timestamps);
     const max = Math.max(...timestamps);
     const range = max - min;
-    return timestamps.map(timestamp => ((timestamp - min) * canvasWidth) / range);
+    const modifiedTimestamps = timestamps.map(timestamp => ((timestamp - min) * canvasWidth) / range);
+
+    modifiedTimestamps.unshift(label);
+    return modifiedTimestamps;
   };
 
   modifyLines = (chart, canvasHeight) => {
@@ -147,11 +156,15 @@ class Chart extends Component {
     });
 
     return linesArray.map(lines => {
-      lines.shift(); // delete label
+      const label = lines.shift(); // delete label
+
       const min = Math.min(...lines);
       const max = Math.max(...lines);
       const range = max - min;
-      return lines.map(line => ((line - min) * canvasHeight) / range);
+      const modifiedLines = lines.map(line => ((line - min) * canvasHeight) / range);
+
+      modifiedLines.unshift(label);
+      return modifiedLines;
     });
   };
 
@@ -162,7 +175,7 @@ class Chart extends Component {
       }
     }
     return true;
-  }
+  };
 }
 
 export default Chart;
