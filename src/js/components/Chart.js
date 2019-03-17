@@ -2,8 +2,6 @@
 import React, { Component } from 'react';
 import Checkbox from '../containers/Checkbox';
 
-const TIMESTAMP_TYPE = 'x';
-const LINE_TYPE = 'line';
 const BORDER_COLOUR = '#7B9EA8';
 
 class Chart extends Component {
@@ -12,16 +10,14 @@ class Chart extends Component {
   overviewChart = React.createRef();
 
   render() {
-    const chart = this.props.children;
-    const types = chart.types;
-    const lines = Object.keys(types)
-      .filter(type => types[type] === LINE_TYPE);
-    const buttons = lines.map((line, index) => {
-      const name = chart.names[line];
-      const color = chart.colors[line];
+    const { lines, names, colors } = this.props;
+    const buttons = lines.map((linePoints, index) => {
+      const label = linePoints[0];
+      const name = names[label];
+      const color = colors[label];
       return (
         <div key={index} className={'col'}>
-          <Checkbox key={index} color={color}>{name}</Checkbox>
+          <Checkbox key={index} color={color} checkboxHandler={this.checkboxHandler}>{name}</Checkbox>
         </div>
       );
     });
@@ -39,7 +35,7 @@ class Chart extends Component {
         <div className={'row mb-3'}>
           <div className={'col'}>
             <div className={'d-flex justify-content-center overview-canvas'}>
-              <canvas ref={this.overviewChart} height={80}>
+              <canvas ref={this.overviewChart} height={50}>
               </canvas>
             </div>
           </div>
@@ -61,6 +57,17 @@ class Chart extends Component {
     window.removeEventListener('resize', this.resizeCanvases);
   }
 
+  checkboxHandler = (label, checkedState) => {
+    // const linesVisibility = {
+    //   ...this.state.linesVisibility,
+    //   label: checkedState
+    // };
+    // this.setState(prevState => ({
+    //   ...prevState,
+    //   linesVisibility: linesVisibility
+    // }));
+  };
+
   resizeCanvases = () => {
     this.updateMainChart();
     this.updateOverviewChart();
@@ -81,26 +88,16 @@ class Chart extends Component {
     canvas.width = canvas.parentElement.offsetWidth;
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
-      const chart = this.props.children;
+      ctx.translate(0, canvas.height);
+      ctx.scale(1, -1);
 
-      const types = chart.types;
-      const columns = chart.columns;
-      const linesArray = columns.filter(column => {
-        const columnLabel = column[0];
-        return types[columnLabel] === LINE_TYPE;
-      });
-
-      const timestamps = columns.find(column => {
-        const columnLabel = column[0];
-        return types[columnLabel] === TIMESTAMP_TYPE;
-      });
-
+      const { timestamps, lines, colors } = this.props;
       const modifiedTimestamps = this.modifyTimestamps(timestamps, canvas.width);
-      const modifiedLines = this.modifyLines(linesArray, canvas.height);
+      const modifiedLines = this.modifyLines(lines, canvas.height);
 
       for (let i = 0; i < modifiedLines.length; i++) {
         const lineLabel = modifiedLines[i][0];
-        ctx.strokeStyle = chart.colors[lineLabel];
+        ctx.strokeStyle = colors[lineLabel];
         ctx.beginPath();
         ctx.moveTo(modifiedTimestamps[1], modifiedLines[i][1]);
         for (let j = 2; j < modifiedLines[i].length; j++) {
@@ -111,31 +108,31 @@ class Chart extends Component {
     }
   };
 
-  modifyTimestamps = (timestamps, canvasWidth) => {
-    const timePoints = timestamps.slice();
-    const label = timePoints.shift(); // delete label
-    if (!this.isSortedArray(timePoints)) {
-      timePoints.sort((a, b) => a - b);
+  modifyTimestamps = (originalTimestamps, canvasWidth) => {
+    const timestamps = originalTimestamps.slice();
+    const label = timestamps.shift();
+    if (!this.isSortedArray(timestamps)) {
+      timestamps.sort((a, b) => a - b);
     }
 
-    const min = Math.min(...timePoints);
-    const max = Math.max(...timePoints);
+    const min = Math.min(...timestamps);
+    const max = Math.max(...timestamps);
     const range = max - min;
-    const modifiedTimestamps = timePoints.map(timestamp => ((timestamp - min) * canvasWidth) / range);
+    const modifiedTimestamps = timestamps.map(timestamp => ((timestamp - min) * canvasWidth) / range);
 
     modifiedTimestamps.unshift(label);
     return modifiedTimestamps;
   };
 
-  modifyLines = (linesArray, canvasHeight) => {
-    return linesArray.map(lineArray => {
+  modifyLines = (originalLines, canvasHeight) => {
+    return originalLines.map(lineArray => {
       const lines = lineArray.slice();
-      const label = lines.shift(); // delete label
+      const label = lines.shift();
 
       const min = Math.min(...lines);
       const max = Math.max(...lines);
       const range = max - min;
-      const modifiedLines = lines.map(line => ((line - min) * canvasHeight) / range);
+      const modifiedLines = lines.map(linePoint => ((linePoint - min) * canvasHeight) / range);
 
       modifiedLines.unshift(label);
       return modifiedLines;
