@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types,no-plusplus */
 import React, { Component } from 'react';
 import Checkbox from '../containers/Checkbox';
 
@@ -7,8 +7,6 @@ const LINE_TYPE = 'line';
 const BORDER_COLOUR = '#7B9EA8';
 
 class Chart extends Component {
-  container = React.createRef();
-
   mainChart = React.createRef();
 
   overviewChart = React.createRef();
@@ -29,7 +27,7 @@ class Chart extends Component {
     });
 
     return (
-      <div className={'container'} ref={this.container}>
+      <div className={'container'}>
         <div className={'row mb-3'}>
           <div className={'col'}>
             <div className={'d-flex justify-content-center'}>
@@ -75,15 +73,6 @@ class Chart extends Component {
       const ctx = canvas.getContext('2d');
       ctx.strokeStyle = BORDER_COLOUR;
       ctx.strokeRect(0, 0, canvas.width, canvas.height);
-      // ctx.beginPath();
-      // ctx.moveTo(0, 150);
-      // ctx.lineTo(50, 20);
-      // ctx.lineTo(100, 100);
-      // ctx.lineTo(150, 120);
-      // ctx.lineTo(200, 40);
-      // ctx.lineTo(250, 70);
-      // ctx.lineTo(300, 10);
-      // ctx.stroke();
     }
   };
 
@@ -95,67 +84,52 @@ class Chart extends Component {
       const chart = this.props.children;
 
       const types = chart.types;
-      const timestamps = this.modifyTimestamps(chart, canvas.width);
-      const lines = this.modifyLines(chart, canvas.height);
+      const columns = chart.columns;
+      const linesArray = columns.filter(column => {
+        const columnLabel = column[0];
+        return types[columnLabel] === LINE_TYPE;
+      });
 
-      // todo
-      for (let i = 0; i < lines.length; i++) {
-        const lineData = lines[i];
-        const lineLabel = lineData[0];
+      const timestamps = columns.find(column => {
+        const columnLabel = column[0];
+        return types[columnLabel] === TIMESTAMP_TYPE;
+      });
+
+      const modifiedTimestamps = this.modifyTimestamps(timestamps, canvas.width);
+      const modifiedLines = this.modifyLines(linesArray, canvas.height);
+
+      for (let i = 0; i < modifiedLines.length; i++) {
+        const lineLabel = modifiedLines[i][0];
         ctx.strokeStyle = chart.colors[lineLabel];
         ctx.beginPath();
-        ctx.moveTo(timestamps[1], lineData[1]);
-        for (let j = 2; j < lineData.length; j++) {
-          ctx.lineTo(timestamps[j], lineData[j]);
+        ctx.moveTo(modifiedTimestamps[1], modifiedLines[i][1]);
+        for (let j = 2; j < modifiedLines[i].length; j++) {
+          ctx.lineTo(modifiedTimestamps[j], modifiedLines[i][j]);
         }
         ctx.stroke();
       }
-
-
-      const lineNames = Object.keys(types)
-        .filter(type => types[type] === LINE_TYPE);
-      const buttons = lineNames.forEach((lineName) => {
-        const name = chart.names[lineName];
-        const color = chart.colors[lineName];
-      });
-      ctx.strokeStyle = BORDER_COLOUR;
-      // ctx.strokeRect(0, 0, canvas.width, canvas.height);
     }
   };
 
-  modifyTimestamps = (chart, canvasWidth) => {
-    const copiedChart = JSON.parse(JSON.stringify(chart)); // deep clone
-    const types = copiedChart.types;
-    const columns = copiedChart.columns;
-    const timestamps = columns.find(column => {
-      const columnLabel = column[0];
-      return types[columnLabel] === TIMESTAMP_TYPE;
-    });
-
-    const label = timestamps.shift(); // delete label
-    if (!this.isSortedArray(timestamps)) {
-      timestamps.sort((a, b) => a - b);
+  modifyTimestamps = (timestamps, canvasWidth) => {
+    const timePoints = timestamps.slice();
+    const label = timePoints.shift(); // delete label
+    if (!this.isSortedArray(timePoints)) {
+      timePoints.sort((a, b) => a - b);
     }
 
-    const min = Math.min(...timestamps);
-    const max = Math.max(...timestamps);
+    const min = Math.min(...timePoints);
+    const max = Math.max(...timePoints);
     const range = max - min;
-    const modifiedTimestamps = timestamps.map(timestamp => ((timestamp - min) * canvasWidth) / range);
+    const modifiedTimestamps = timePoints.map(timestamp => ((timestamp - min) * canvasWidth) / range);
 
     modifiedTimestamps.unshift(label);
     return modifiedTimestamps;
   };
 
-  modifyLines = (chart, canvasHeight) => {
-    const copiedChart = JSON.parse(JSON.stringify(chart)); // deep clone
-    const types = copiedChart.types;
-    const columns = copiedChart.columns;
-    const linesArray = columns.filter(column => {
-      const columnLabel = column[0];
-      return types[columnLabel] === LINE_TYPE;
-    });
-
-    return linesArray.map(lines => {
+  modifyLines = (linesArray, canvasHeight) => {
+    return linesArray.map(lineArray => {
+      const lines = lineArray.slice();
       const label = lines.shift(); // delete label
 
       const min = Math.min(...lines);

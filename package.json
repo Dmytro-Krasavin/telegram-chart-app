@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.development.config.js --mode development --open --hot",
     "build": "webpack --config webpack.production.config.js --mode production",
-    "fix": "eslint --fix . --ext .js,.vue src/js"
+    "fix": "eslint --fix . --ext .js src/js"
   },
   "author": "d.krasavin",
   "license": "ISC",

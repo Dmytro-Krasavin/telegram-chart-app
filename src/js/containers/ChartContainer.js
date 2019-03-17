@@ -23,7 +23,6 @@ class ChartContainer extends Component {
 
   componentDidMount() {
     this.loadData();
-    this.printData();
   }
 
   loadData = () => {
@@ -39,10 +38,6 @@ class ChartContainer extends Component {
       ...prevState,
       isNightMode: !this.state.isNightMode
     }));
-  };
-
-  printData = () => {
-    console.log(chartData);
   };
 }
 
