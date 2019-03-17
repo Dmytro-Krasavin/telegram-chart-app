@@ -129,10 +129,8 @@ class Chart extends Component {
       const lines = lineArray.slice();
       const label = lines.shift();
 
-      const min = Math.min(...lines);
       const max = Math.max(...lines);
-      const range = max - min;
-      const modifiedLines = lines.map(linePoint => ((linePoint - min) * canvasHeight) / range);
+      const modifiedLines = lines.map(linePoint => (linePoint * canvasHeight * 0.9) / max);
 
       modifiedLines.unshift(label);
       return modifiedLines;
