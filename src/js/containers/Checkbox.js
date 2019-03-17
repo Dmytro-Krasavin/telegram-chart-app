@@ -16,8 +16,7 @@ class Checkbox extends PureComponent {
       checked: checkedState,
       isAnimating: true
     });
-    const label = this.props.children;
-    this.props.checkboxHandler(label, checkedState);
+    this.props.checkboxHandler(this.props.label, checkedState);
   };
 
   ping = () => {

@@ -9,6 +9,10 @@ class Chart extends Component {
 
   overviewChart = React.createRef();
 
+  state = {
+    linesVisibility: this.props.initialLinesVisibility
+  };
+
   render() {
     const { lines, names, colors } = this.props;
     const buttons = lines.map((linePoints, index) => {
@@ -17,7 +21,7 @@ class Chart extends Component {
       const color = colors[label];
       return (
         <div key={index} className={'col'}>
-          <Checkbox key={index} color={color} checkboxHandler={this.checkboxHandler}>{name}</Checkbox>
+          <Checkbox key={index} color={color} checkboxHandler={this.checkboxHandler} label={label}>{name}</Checkbox>
         </div>
       );
     });
@@ -50,25 +54,24 @@ class Chart extends Component {
   componentDidMount() {
     this.updateMainChart();
     this.updateOverviewChart();
-    window.addEventListener('resize', this.resizeCanvases);
+    window.addEventListener('resize', this.updateCanvases);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeCanvases);
+    window.removeEventListener('resize', this.updateCanvases);
   }
 
   checkboxHandler = (label, checkedState) => {
-    // const linesVisibility = {
-    //   ...this.state.linesVisibility,
-    //   label: checkedState
-    // };
-    // this.setState(prevState => ({
-    //   ...prevState,
-    //   linesVisibility: linesVisibility
-    // }));
+    const linesVisibility = this.state.linesVisibility;
+    linesVisibility[label] = checkedState;
+    this.setState(prevState => ({
+      ...prevState,
+      linesVisibility: linesVisibility
+    }));
+    this.updateCanvases();
   };
 
-  resizeCanvases = () => {
+  updateCanvases = () => {
     this.updateMainChart();
     this.updateOverviewChart();
   };
@@ -125,17 +128,34 @@ class Chart extends Component {
   };
 
   modifyLines = (originalLines, canvasHeight) => {
-    return originalLines.map(lineArray => {
-      const lines = lineArray.slice();
-      const label = lines.shift();
-
-      const max = Math.max(...lines);
-      const modifiedLines = lines.map(linePoint => (linePoint * canvasHeight * 0.9) / max);
-
-      modifiedLines.unshift(label);
-      return modifiedLines;
+    const modifiedLines = [];
+    const max = this.getMaxValueInLinePoints(originalLines);
+    originalLines.forEach(lineArray => {
+      const lineLabel = lineArray[0];
+      if (this.state.linesVisibility[lineLabel]) {
+        const lines = lineArray.slice();
+        const label = lines.shift();
+        const modifiedLine = lines.map(linePoint => (linePoint * canvasHeight * 0.9) / max);
+        modifiedLine.unshift(label);
+        modifiedLines.push(modifiedLine);
+      }
     });
+    return modifiedLines;
   };
+
+  getMaxValueInLinePoints(originalLines) {
+    let max = 0;
+    originalLines.forEach(lineArray => {
+      const lineLabel = lineArray[0];
+      if (this.state.linesVisibility[lineLabel]) {
+        const lines = lineArray.slice();
+        const label = lines.shift();
+        max = Math.max(...lines, max);
+        lines.unshift(label);
+      }
+    });
+    return max;
+  }
 
   isSortedArray = (array) => {
     for (let i = 0; i < array.length - 1; i++) {

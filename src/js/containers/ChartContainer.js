@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console,no-return-assign */
 import React, { Component } from 'react';
 import * as chartData from '../../data/chart_data';
 import Chart from '../components/Chart';
@@ -29,7 +29,17 @@ class ChartContainer extends Component {
         return types[columnLabel] === TIMESTAMP_TYPE;
       });
 
-      return (<Chart key={index} timestamps={timestamps} lines={linesArray} names={names} colors={colors}/>);
+      const linesVisibility = {};
+      Object.keys(names).forEach(name => linesVisibility[name] = true);
+
+      return (
+        <Chart key={index}
+                     timestamps={timestamps}
+                     lines={linesArray}
+                     names={names}
+                     colors={colors}
+                     initialLinesVisibility={linesVisibility}/>
+      );
     });
     return (
       <div className={'container mt-5'}>
