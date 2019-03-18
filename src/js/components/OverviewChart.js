@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types,no-plusplus */
 import React, { Component } from 'react';
-import LinePointConverter from '../utils/ChartPointModifier';
+import ChartPointModifier from '../utils/ChartPointModifier';
+import ChartPainter from '../utils/ChartPainter';
 
 class OverviewChart extends Component {
   overviewChart = React.createRef();
@@ -20,35 +21,34 @@ class OverviewChart extends Component {
 
   render() {
     return (
-      <canvas ref={this.overviewChart} height={this.props.height}>
-      </canvas>
+      <div className={'canvas-container'}>
+        <canvas ref={this.overviewChart} height={this.props.height}>
+        </canvas>
+      </div>
     );
   }
 
   updateOverviewChart = () => {
     const canvas = this.overviewChart.current;
-    canvas.width = canvas.parentElement.offsetWidth;
+
+    const parentDiv = canvas.parentElement;
+    canvas.width = parentDiv.offsetWidth;
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
       ctx.translate(0, canvas.height);
       ctx.scale(1, -1);
 
+      if (!this.chartPainter) {
+        this.chartPainter = new ChartPainter(ctx);
+      }
+
       const {
         timestamps, lines, colors, linesVisibility
       } = this.props;
-      const modifiedTimestamps = LinePointConverter.modifyTimestamps(timestamps, canvas.width, linesVisibility);
-      const modifiedLines = LinePointConverter.modifyLines(lines, canvas.height, linesVisibility);
-
-      for (let i = 0; i < modifiedLines.length; i++) {
-        const lineLabel = modifiedLines[i][0];
-        ctx.strokeStyle = colors[lineLabel];
-        ctx.beginPath();
-        ctx.moveTo(modifiedTimestamps[1], modifiedLines[i][1]);
-        for (let j = 2; j < modifiedLines[i].length; j++) {
-          ctx.lineTo(modifiedTimestamps[j], modifiedLines[i][j]);
-        }
-        ctx.stroke();
-      }
+      const borderWidth = getComputedStyle(parentDiv).getPropertyValue('border-width').replace('px', '');
+      const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
+      const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility);
+      this.chartPainter.paintChart(modifiedTimestamps, modifiedLines, colors);
     }
   };
 }

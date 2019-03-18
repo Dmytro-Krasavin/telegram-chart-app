@@ -42,15 +42,13 @@ class Chart extends Component {
         </div>
         <div className={'row mb-3'}>
           <div className={'col'}>
-            <div className={'canvas'}>
-              <OverviewChart timestamps={timestamps}
-                             lines={lines}
-                             names={names}
-                             colors={colors}
-                             linesVisibility={this.state.linesVisibility}
-                             height={OVERVIEW_CHART_HEIGHT}
-              />
-            </div>
+            <OverviewChart timestamps={timestamps}
+                           lines={lines}
+                           names={names}
+                           colors={colors}
+                           linesVisibility={this.state.linesVisibility}
+                           height={OVERVIEW_CHART_HEIGHT}
+            />
           </div>
         </div>
         <div className={'row mb-5'}>
