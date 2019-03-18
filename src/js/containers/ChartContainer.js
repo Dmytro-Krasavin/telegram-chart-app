@@ -14,43 +14,18 @@ class ChartContainer extends Component {
     isLoading: true
   };
 
+  componentDidMount() {
+    this.loadData();
+  }
+
   render() {
-    const chartList = this.state.chartData.map((chart, index) => {
-      const {
-        columns, types, names, colors
-      } = chart;
-      const linesArray = columns.filter(column => {
-        const columnLabel = column[0];
-        return types[columnLabel] === LINE_TYPE;
-      });
-
-      const timestamps = columns.find(column => {
-        const columnLabel = column[0];
-        return types[columnLabel] === TIMESTAMP_TYPE;
-      });
-
-      const linesVisibility = {};
-      Object.keys(names).forEach(name => linesVisibility[name] = true);
-
-      return (
-        <Chart key={index}
-                     timestamps={timestamps}
-                     lines={linesArray}
-                     names={names}
-                     colors={colors}
-                     initialLinesVisibility={linesVisibility}/>
-      );
-    });
+    const chartList = this.state.chartData.map((chart, index) => this.chartDataToComponent(chart, index));
     return (
       <div className={'chart-page-container'}>
         {chartList}
         <SwitchModeButton isNightMode={this.state.isNightMode} switchModeHandler={this.switchMode}/>
       </div>
     );
-  }
-
-  componentDidMount() {
-    this.loadData();
   }
 
   loadData = () => {
@@ -67,6 +42,26 @@ class ChartContainer extends Component {
       isNightMode: !this.state.isNightMode
     }));
   };
+
+  chartDataToComponent = (chart, index) => {
+    const {
+      columns, types, names, colors
+    } = chart;
+    const linesArray = columns.filter(column => types[column[0]] === LINE_TYPE);
+    const timestamps = columns.find(column => types[column[0]] === TIMESTAMP_TYPE);
+
+    const linesVisibility = {};
+    Object.keys(names).forEach(name => linesVisibility[name] = true);
+
+    return (
+      <Chart key={index}
+             timestamps={timestamps}
+             lines={linesArray}
+             names={names}
+             colors={colors}
+             initialLinesVisibility={linesVisibility}/>
+    );
+  }
 }
 
 export default ChartContainer;
