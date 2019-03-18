@@ -1,5 +1,33 @@
-.canvas-container {
-    border: 1px solid #7B9EA8;
+.canvas-container{
+    border: 1px solid #EBEBEB;
     display: flex;
     align-content: center;
+}
+
+.invisible-chart-area-right{
+    display: flex;
+    background-color: #EBEBEB;
+    height: 100%;
+    opacity: 0.5;
+    position: absolute;
+    right: 1rem;
+}
+
+.invisible-chart-area-left{
+    display: flex;
+    background-color: #EBEBEB;
+    height: 100%;
+    opacity: 0.5;
+    position: absolute;
+    left: 1rem;
+}
+
+.visible-chart-area {
+    display: flex;
+    border: 1px solid #7B9EA8;
+    border-right-width: 10px;
+    border-left-width: 10px;
+    height: 100%;
+    position: absolute;
+    opacity: 0.5;
 }
