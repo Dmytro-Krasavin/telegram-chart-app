@@ -1,3 +1,5 @@
-.overview-canvas {
+.canvas {
   border: 1px solid #7B9EA8;
+  display: flex;
+  align-content: center;
 }

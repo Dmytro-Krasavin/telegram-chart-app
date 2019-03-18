@@ -1,0 +1,15 @@
+.chart-container {
+    width: 95%;
+    align-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chart-page-container {
+    width: 95%;
+    max-width: 1000px;
+    align-content: center;
+    margin-top: 5rem;
+    margin-left: auto;
+    margin-right: auto;
+}

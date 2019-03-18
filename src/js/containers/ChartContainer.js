@@ -42,7 +42,7 @@ class ChartContainer extends Component {
       );
     });
     return (
-      <div className={'container mt-5'}>
+      <div className={'chart-page-container'}>
         {chartList}
         <SwitchModeButton isNightMode={this.state.isNightMode} switchModeHandler={this.switchMode}/>
       </div>
