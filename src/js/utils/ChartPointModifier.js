@@ -1,13 +1,14 @@
 const CHART_HEIGHT_COEFFICIENT = 0.9;
+const BORDER_WIDTH = 2;
 
 class ChartPointModifier {
-  modifyTimestamps = (originalTimestamps, canvasWidth, borderWidth) => {
+  modifyTimestamps = (originalTimestamps, canvasWidth) => {
     const timestamps = originalTimestamps.slice();
     const label = timestamps.shift();
     const min = Math.min(...timestamps);
     const max = Math.max(...timestamps);
     const range = max - min;
-    const modifiedTimestamps = timestamps.map(timestamp => this.modifyTimestamp(timestamp, canvasWidth, min, range, borderWidth));
+    const modifiedTimestamps = timestamps.map(timestamp => ((timestamp - min) * (canvasWidth - BORDER_WIDTH) / range));
     modifiedTimestamps.unshift(label);
     return modifiedTimestamps;
   };
@@ -20,7 +21,7 @@ class ChartPointModifier {
       if (linesVisibility[lineLabel]) {
         const lines = lineArray.slice();
         const label = lines.shift();
-        const modifiedLine = lines.map(linePoint => this.modifyLinePoint(linePoint, canvasHeight, max));
+        const modifiedLine = lines.map(linePoint => (linePoint * canvasHeight * CHART_HEIGHT_COEFFICIENT) / max);
         modifiedLine.unshift(label);
         modifiedLines.push(modifiedLine);
       }
@@ -41,10 +42,6 @@ class ChartPointModifier {
     });
     return max;
   };
-
-  modifyTimestamp = (timestamp, canvasWidth, min, range, borderWidth) => ((timestamp - min) * (canvasWidth - borderWidth) / range);
-
-  modifyLinePoint = (linePoint, canvasHeight, max) => (linePoint * canvasHeight * CHART_HEIGHT_COEFFICIENT) / max;
 }
 
 export default new ChartPointModifier();

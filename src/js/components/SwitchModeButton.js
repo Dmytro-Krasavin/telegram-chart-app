@@ -4,12 +4,10 @@ import React from 'react';
 const SwitchModeButton = (props) => {
   const modeText = props.isNightMode ? 'day' : 'night';
   return (
-    <div className={'row'}>
+    <div className={'row switch-mode-container'}>
       <div className={'col-sm'}>
-        <div className={'d-flex justify-content-center'}>
-          <a href={'/'} className={'btn btn-link btn-lg'}
+          <a href={'/'} className={'switch-mode-button'}
              onClick={props.switchModeHandler}>{`Switch to ${modeText} mode`}</a>
-        </div>
       </div>
     </div>
   );

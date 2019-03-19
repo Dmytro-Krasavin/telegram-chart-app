@@ -3,37 +3,24 @@ import React, { Component } from 'react';
 import ChartPointModifier from '../utils/ChartPointModifier';
 import ChartPainter from '../utils/ChartPainter';
 
-const DEFAULT_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.7;
+const DEFAULT_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.5;
 const DEFAULT_INVISIBLE_AREA_RIGHT_COEFFICIENT = 0.2;
+const VISIBLE_AREA_BORDER = 15;
 
 class OverviewChart extends Component {
   overviewChart = React.createRef();
 
   state = {
-    invisibleAreaLeft: {
-      style: {
-        width: 0
-      }
+    invisibleAreaLeftStyle: {
+      width: 0
     },
-    invisibleAreaRight: {
-      style: {
-        width: 0
-      }
-    },
-    visibleArea: {
-      style: {
-        left: 0,
-        right: 0
-      }
+    invisibleAreaRightStyle: {
+      width: 0
     }
   };
 
   componentDidMount() {
-    const canvas = this.overviewChart.current;
-    const parentDiv = canvas.parentElement;
-    canvas.width = parentDiv.offsetWidth;
-    this.updateOverviewChart();
-    this.setInitialVisibleArea(canvas.width);
+    this.resize();
     window.addEventListener('resize', this.resize);
   }
 
@@ -47,39 +34,33 @@ class OverviewChart extends Component {
 
   render() {
     const { height } = this.props;
+    const visibleAreaStyle = {
+      left: this.state.invisibleAreaLeftStyle.width + VISIBLE_AREA_BORDER,
+      right: this.state.invisibleAreaRightStyle.width + VISIBLE_AREA_BORDER
+    };
     return (
       <div className={'canvas-container'}>
         <canvas ref={this.overviewChart} height={height}>
         </canvas>
-        <div className={'invisible-chart-area-left'} style={this.state.invisibleAreaLeft.style}/>
-        <div className={'visible-chart-area'} style={this.state.visibleArea.style}/>
-        <div className={'invisible-chart-area-right'} style={this.state.invisibleAreaRight.style}/>
+        <div className={'invisible-chart-area-left'} style={this.state.invisibleAreaLeftStyle}/>
+        <div className={'visible-chart-area'} style={visibleAreaStyle}/>
+        <div className={'invisible-chart-area-right'} style={this.state.invisibleAreaRightStyle}/>
       </div>
 
     );
   }
 
   resize = () => {
-    const canvas = this.overviewChart.current;
-    const parentDiv = canvas.parentElement;
-    canvas.width = parentDiv.offsetWidth;
-    this.updateOverviewChart();
+    const canvas = this.updateOverviewChart();
     this.setInitialVisibleArea(canvas.width);
   };
 
   setInitialVisibleArea = (canvasWidth) => {
     const invisibleAreaLeftWidth = canvasWidth * DEFAULT_INVISIBLE_AREA_LEFT_COEFFICIENT;
     const invisibleAreaRightWidth = canvasWidth * DEFAULT_INVISIBLE_AREA_RIGHT_COEFFICIENT;
-    const visibleAreaStyle = {
-      left: invisibleAreaLeftWidth,
-      right: invisibleAreaRightWidth
-    };
-
-    // todo
     this.setState(() => ({
-      invisibleAreaLeft: { style: { width: invisibleAreaLeftWidth - 5 } },
-      invisibleAreaRight: { style: { width: invisibleAreaRightWidth - 15 } },
-      visibleArea: { style: visibleAreaStyle }
+      invisibleAreaLeftStyle: { width: invisibleAreaLeftWidth },
+      invisibleAreaRightStyle: { width: invisibleAreaRightWidth }
     }));
   };
 
@@ -91,7 +72,6 @@ class OverviewChart extends Component {
       const ctx = canvas.getContext('2d');
       ctx.translate(0, canvas.height);
       ctx.scale(1, -1);
-
       if (!this.chartPainter) {
         this.chartPainter = new ChartPainter(ctx);
       }
@@ -99,13 +79,11 @@ class OverviewChart extends Component {
       const {
         timestamps, lines, colors, linesVisibility
       } = this.props;
-      const borderWidth = getComputedStyle(parentDiv)
-        .getPropertyValue('border-width')
-        .replace('px', '');
-      const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
+      const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width);
       const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility);
       this.chartPainter.paintChart(modifiedTimestamps, modifiedLines, colors);
     }
+    return canvas;
   };
 }
 
