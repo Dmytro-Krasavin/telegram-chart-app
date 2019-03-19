@@ -60,12 +60,15 @@ class OverviewChart extends Component {
     const oldRightWidth = invisibleAreaRightStyle.width;
     const newLeftWidth = oldLeftWidth + shiftX;
     const newRightWidth = oldRightWidth - shiftX;
+    const leftCoefficient = newLeftWidth / canvasWidth;
+    const rightCoefficient = newRightWidth / canvasWidth;
+    if (leftCoefficient < 0 || rightCoefficient < 0) return;
     this.setState((prevState) => ({
       ...prevState,
       invisibleAreaLeftStyle: { width: newLeftWidth },
       invisibleAreaRightStyle: { width: newRightWidth },
-      leftCoefficient: newLeftWidth / canvasWidth,
-      rightCoefficient: newRightWidth / canvasWidth
+      leftCoefficient: leftCoefficient,
+      rightCoefficient: rightCoefficient
     }));
   };
 
