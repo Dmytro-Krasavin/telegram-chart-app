@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import ChartPointModifier from '../utils/ChartPointModifier';
 import ChartPainter from '../utils/ChartPainter';
+import VisibleOverviewChartArea from './VisibleOverviewChartArea';
 
-const DEFAULT_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.5;
-const DEFAULT_INVISIBLE_AREA_RIGHT_COEFFICIENT = 0.2;
+const INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.5;
+const INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT = 0.2;
 const VISIBLE_AREA_BORDER = 15;
 
 class OverviewChart extends Component {
@@ -16,7 +17,10 @@ class OverviewChart extends Component {
     },
     invisibleAreaRightStyle: {
       width: 0
-    }
+    },
+    canvasWidth: 0,
+    leftCoefficient: INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT,
+    rightCoefficient: INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT
   };
 
   componentDidMount() {
@@ -34,30 +38,35 @@ class OverviewChart extends Component {
 
   render() {
     const { height } = this.props;
+    const { canvasWidth, invisibleAreaLeftStyle, invisibleAreaRightStyle } = this.state;
     const visibleAreaStyle = {
       left: this.state.invisibleAreaLeftStyle.width + VISIBLE_AREA_BORDER,
       right: this.state.invisibleAreaRightStyle.width + VISIBLE_AREA_BORDER
     };
     return (
       <div className={'canvas-container'}>
-        <canvas ref={this.overviewChart} height={height}>
+        <canvas ref={this.overviewChart} height={height} width={canvasWidth}>
         </canvas>
-        <div className={'invisible-chart-area-left'} style={this.state.invisibleAreaLeftStyle}/>
-        <div className={'visible-chart-area'} style={visibleAreaStyle}/>
-        <div className={'invisible-chart-area-right'} style={this.state.invisibleAreaRightStyle}/>
+        <div className={'invisible-chart-area-left'} style={invisibleAreaLeftStyle}/>
+        <VisibleOverviewChartArea style={visibleAreaStyle}/>
+        <div className={'invisible-chart-area-right'} style={invisibleAreaRightStyle}/>
       </div>
-
     );
   }
 
   resize = () => {
     const canvas = this.updateOverviewChart();
-    this.setInitialVisibleArea(canvas.width);
+    this.resizeVisibleArea(canvas.width);
+    this.setState((prevState) => ({
+      ...prevState,
+      canvasWidth: canvas.width
+    }));
   };
 
-  setInitialVisibleArea = (canvasWidth) => {
-    const invisibleAreaLeftWidth = canvasWidth * DEFAULT_INVISIBLE_AREA_LEFT_COEFFICIENT;
-    const invisibleAreaRightWidth = canvasWidth * DEFAULT_INVISIBLE_AREA_RIGHT_COEFFICIENT;
+  resizeVisibleArea = (canvasWidth) => {
+    const { leftCoefficient, rightCoefficient } = this.state;
+    const invisibleAreaLeftWidth = canvasWidth * leftCoefficient;
+    const invisibleAreaRightWidth = canvasWidth * rightCoefficient;
     this.setState(() => ({
       invisibleAreaLeftStyle: { width: invisibleAreaLeftWidth },
       invisibleAreaRightStyle: { width: invisibleAreaRightWidth }
