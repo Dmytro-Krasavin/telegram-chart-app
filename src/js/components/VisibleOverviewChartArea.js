@@ -2,12 +2,10 @@
 import React, { Component } from 'react';
 
 class VisibleOverviewChartArea extends Component {
-  visibleArea = React.createRef();
-
   state = {
     dragging: false,
-    posX: 0,
-    relX: 0
+    shiftX: 0,
+    posX: 0
   };
 
   componentDidUpdate(props, state) {
@@ -22,10 +20,9 @@ class VisibleOverviewChartArea extends Component {
 
   onMouseDown = (e) => {
     if (e.button !== 0) return;
-    const pos = this.visibleArea.current.offsetLeft;
     this.setState({
       dragging: true,
-      relX: e.pageX - pos
+      posX: e.pageX
     });
     e.stopPropagation();
     e.preventDefault();
@@ -39,18 +36,19 @@ class VisibleOverviewChartArea extends Component {
 
   onMouseMove = (e) => {
     if (!this.state.dragging) return;
-    this.props.onVisibleAreaDrag(e.pageX - this.state.relX);
-    // this.setState((prevState) => ({
-    //   ...prevState,
-    //   posX: e.pageX - this.state.rel.x
-    // }));
+    const oldPosX = this.state.posX;
+    this.setState(() => ({
+      shiftX: e.pageX - oldPosX,
+      posX: e.pageX
+    }));
     e.stopPropagation();
     e.preventDefault();
+    this.props.onVisibleAreaDrag(this.state.shiftX);
   };
 
   render() {
     return (
-      <div className={'visible-chart-area'} style={this.props.style} onMouseDown={this.onMouseDown} ref={this.visibleArea}/>
+      <div className={'visible-chart-area'} style={this.props.style} onMouseDown={this.onMouseDown}/>
     );
   }
 }

@@ -48,11 +48,26 @@ class OverviewChart extends Component {
         <canvas ref={this.overviewChart} height={height} width={canvasWidth}>
         </canvas>
         <div className={'invisible-chart-area-left'} style={invisibleAreaLeftStyle}/>
-        <VisibleOverviewChartArea style={visibleAreaStyle}/>
+        <VisibleOverviewChartArea style={visibleAreaStyle} onVisibleAreaDrag={this.onVisibleAreaDrag}/>
         <div className={'invisible-chart-area-right'} style={invisibleAreaRightStyle}/>
       </div>
     );
   }
+
+  onVisibleAreaDrag = (shiftX) => {
+    const { canvasWidth, invisibleAreaLeftStyle, invisibleAreaRightStyle } = this.state;
+    const oldLeftWidth = invisibleAreaLeftStyle.width;
+    const oldRightWidth = invisibleAreaRightStyle.width;
+    const newLeftWidth = oldLeftWidth + shiftX;
+    const newRightWidth = oldRightWidth - shiftX;
+    this.setState((prevState) => ({
+      ...prevState,
+      invisibleAreaLeftStyle: { width: newLeftWidth },
+      invisibleAreaRightStyle: { width: newRightWidth },
+      leftCoefficient: newLeftWidth / canvasWidth,
+      rightCoefficient: newRightWidth / canvasWidth
+    }));
+  };
 
   resize = () => {
     const canvas = this.updateOverviewChart();
@@ -67,7 +82,8 @@ class OverviewChart extends Component {
     const { leftCoefficient, rightCoefficient } = this.state;
     const invisibleAreaLeftWidth = canvasWidth * leftCoefficient;
     const invisibleAreaRightWidth = canvasWidth * rightCoefficient;
-    this.setState(() => ({
+    this.setState((prevState) => ({
+      ...prevState,
       invisibleAreaLeftStyle: { width: invisibleAreaLeftWidth },
       invisibleAreaRightStyle: { width: invisibleAreaRightWidth }
     }));
