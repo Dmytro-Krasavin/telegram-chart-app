@@ -1,6 +1,30 @@
 const CHART_HEIGHT_COEFFICIENT = 0.9;
 
 class ChartPointModifier {
+  sliceMainTimestamps = (originalTimestamps, leftCoefficient, rightCoefficient) => {
+    const timestamps = originalTimestamps.slice();
+    const label = timestamps.shift();
+    const startIndex = Math.ceil(timestamps.length * leftCoefficient);
+    const endIndex = Math.floor(timestamps.length * (1 - rightCoefficient));
+    const mainTimestamps = timestamps.slice(startIndex, endIndex);
+    mainTimestamps.unshift(label);
+    return mainTimestamps;
+  };
+
+  sliceMainLines = (originalLines, leftCoefficient, rightCoefficient) => {
+    const modifiedMainLines = [];
+    originalLines.forEach(lineArray => {
+      const lines = lineArray.slice();
+      const label = lines.shift();
+      const startIndex = Math.ceil(lines.length * leftCoefficient);
+      const endIndex = Math.floor(lines.length * (1 - rightCoefficient));
+      const mainLines = lines.slice(startIndex, endIndex);
+      mainLines.unshift(label);
+      modifiedMainLines.push(mainLines);
+    });
+    return modifiedMainLines;
+  };
+
   modifyTimestamps = (originalTimestamps, canvasWidth, borderWidth) => {
     const timestamps = originalTimestamps.slice();
     const label = timestamps.shift();
@@ -12,9 +36,8 @@ class ChartPointModifier {
     return modifiedTimestamps;
   };
 
-  modifyLines = (originalLines, canvasHeight, linesVisibility) => {
+  modifyLines = (originalLines, canvasHeight, linesVisibility, max) => {
     const modifiedLines = [];
-    const max = this.getMaxValueInLinePoints(originalLines, linesVisibility);
     originalLines.forEach(lineArray => {
       const lineLabel = lineArray[0];
       if (linesVisibility[lineLabel]) {

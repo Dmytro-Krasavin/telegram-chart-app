@@ -1,5 +1,10 @@
-.canvas-container{
+.overview-canvas-container{
     border: 1px solid #EBEBEB;
+    display: flex;
+    align-content: center;
+}
+
+.main-canvas-container{
     display: flex;
     align-content: center;
 }
