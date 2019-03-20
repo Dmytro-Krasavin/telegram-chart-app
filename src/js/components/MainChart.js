@@ -32,8 +32,6 @@ class MainChart extends Component {
     canvas.width = parentDiv.offsetWidth;
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
-      ctx.translate(0, canvas.height);
-      ctx.scale(1, -1);
       ctx.lineJoin = MAIN_LINE_JOIN;
 
       const {
@@ -47,8 +45,8 @@ class MainChart extends Component {
       const max = ChartPointModifier.getMaxValueInLinePoints(slicedLines, linesVisibility);
       const modifiedTimestamps = ChartPointModifier.modifyTimestamps(slicedTimestamps, canvas.width, borderWidth);
       const modifiedLines = ChartPointModifier.modifyLines(slicedLines, canvas.height, linesVisibility, max);
-      ChartPainter.paintCoordinateGrid(ctx, timestamps, modifiedTimestamps, lines, modifiedLines, canvas.height, canvas.width);
-      ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, MAIN_LINE_WIDTH);
+      ChartPainter.paintCoordinateGrid(ctx, canvas.height, canvas.width, max);
+      ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, MAIN_LINE_WIDTH);
     }
     return canvas;
   };

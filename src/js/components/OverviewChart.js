@@ -107,8 +107,6 @@ class OverviewChart extends Component {
     canvas.width = parentDiv.offsetWidth;
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
-      ctx.translate(0, canvas.height);
-      ctx.scale(1, -1);
       ctx.lineJoin = OVERVIEW_LINE_JOIN;
 
       const {
@@ -120,7 +118,7 @@ class OverviewChart extends Component {
       const max = ChartPointModifier.getMaxValueInLinePoints(lines, linesVisibility);
       const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
       const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility, max);
-      ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, OVERVIEW_LINE_WIDTH);
+      ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, OVERVIEW_LINE_WIDTH);
     }
     return canvas;
   };
