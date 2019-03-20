@@ -1,14 +1,13 @@
 const CHART_HEIGHT_COEFFICIENT = 0.9;
-const BORDER_WIDTH = 2;
 
 class ChartPointModifier {
-  modifyTimestamps = (originalTimestamps, canvasWidth) => {
+  modifyTimestamps = (originalTimestamps, canvasWidth, borderWidth) => {
     const timestamps = originalTimestamps.slice();
     const label = timestamps.shift();
     const min = Math.min(...timestamps);
     const max = Math.max(...timestamps);
     const range = max - min;
-    const modifiedTimestamps = timestamps.map(timestamp => ((timestamp - min) * (canvasWidth - BORDER_WIDTH) / range));
+    const modifiedTimestamps = timestamps.map(timestamp => ((timestamp - min) * (canvasWidth - (borderWidth * 2)) / range));
     modifiedTimestamps.unshift(label);
     return modifiedTimestamps;
   };

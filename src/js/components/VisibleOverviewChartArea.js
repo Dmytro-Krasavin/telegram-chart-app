@@ -1,11 +1,13 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types,no-unused-expressions */
 import React, { Component } from 'react';
 
 class VisibleOverviewChartArea extends Component {
   state = {
     dragging: false,
     shiftX: 0,
-    posX: 0
+    posX: 0,
+    resizingLeft: false,
+    resizingRight: false
   };
 
   componentDidUpdate(props, state) {
@@ -20,16 +22,33 @@ class VisibleOverviewChartArea extends Component {
 
   onMouseDown = (e) => {
     if (e.button !== 0) return;
-    this.setState({
+    const { pageX, target } = e;
+    const borderWidth = getComputedStyle(target)
+      .getPropertyValue('border-left-width')
+      .replace('px', '');
+
+    const offsetX = pageX - borderWidth - target.getBoundingClientRect().left;
+    const isLeftBorder = offsetX < 0;
+    const isRightBorder = offsetX > target.clientWidth;
+    this.setState((prevState) => ({
+      ...prevState,
       dragging: true,
-      posX: e.pageX
-    });
+      resizingLeft: isLeftBorder,
+      resizingRight: isRightBorder,
+      posX: pageX
+    }));
+
     e.stopPropagation();
     e.preventDefault();
   };
 
   onMouseUp = (e) => {
-    this.setState({ dragging: false });
+    this.setState((prevState) => ({
+      ...prevState,
+      dragging: false,
+      resizingLeft: false,
+      resizingRight: false
+    }));
     e.stopPropagation();
     e.preventDefault();
   };
@@ -37,13 +56,20 @@ class VisibleOverviewChartArea extends Component {
   onMouseMove = (e) => {
     if (!this.state.dragging) return;
     const oldPosX = this.state.posX;
-    this.setState(() => ({
+
+    this.setState((prevState) => ({
+      ...prevState,
       shiftX: e.pageX - oldPosX,
       posX: e.pageX
     }));
     e.stopPropagation();
     e.preventDefault();
-    this.props.onVisibleAreaDrag(this.state.shiftX);
+
+    const { onVisibleAreaSizingLeft, onVisibleAreaSizingRight, onVisibleAreaDrag } = this.props;
+    const { resizingLeft, resizingRight, shiftX } = this.state;
+    resizingLeft && onVisibleAreaSizingLeft(shiftX);
+    resizingRight && onVisibleAreaSizingRight(shiftX);
+    !(resizingLeft || resizingRight) && onVisibleAreaDrag(shiftX);
   };
 
   render() {

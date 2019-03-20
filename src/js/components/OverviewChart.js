@@ -1,12 +1,13 @@
-/* eslint-disable react/prop-types,no-plusplus */
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import ChartPointModifier from '../utils/ChartPointModifier';
 import ChartPainter from '../utils/ChartPainter';
 import VisibleOverviewChartArea from './VisibleOverviewChartArea';
 
+const VISIBLE_AREA_BORDER = 15;
 const INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.5;
 const INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT = 0.2;
-const VISIBLE_AREA_BORDER = 15;
+const MAX_INVISIBLE_AREA_COEFFICIENT = 0.9;
 
 class OverviewChart extends Component {
   overviewChart = React.createRef();
@@ -18,7 +19,6 @@ class OverviewChart extends Component {
     invisibleAreaRightStyle: {
       width: 0
     },
-    canvasWidth: 0,
     leftCoefficient: INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT,
     rightCoefficient: INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT
   };
@@ -40,21 +40,24 @@ class OverviewChart extends Component {
     const { height } = this.props;
     const { canvasWidth, invisibleAreaLeftStyle, invisibleAreaRightStyle } = this.state;
     const visibleAreaStyle = {
-      left: this.state.invisibleAreaLeftStyle.width + VISIBLE_AREA_BORDER,
-      right: this.state.invisibleAreaRightStyle.width + VISIBLE_AREA_BORDER
+      left: invisibleAreaLeftStyle.width + VISIBLE_AREA_BORDER,
+      right: invisibleAreaRightStyle.width + VISIBLE_AREA_BORDER
     };
     return (
       <div className={'canvas-container'}>
         <canvas ref={this.overviewChart} height={height} width={canvasWidth}>
         </canvas>
         <div className={'invisible-chart-area-left'} style={invisibleAreaLeftStyle}/>
-        <VisibleOverviewChartArea style={visibleAreaStyle} onVisibleAreaDrag={this.onVisibleAreaDrag}/>
+        <VisibleOverviewChartArea style={visibleAreaStyle}
+                                  onVisibleAreaDrag={this.dragVisibleArea}
+                                  onVisibleAreaSizingLeft={this.resizeVisibleAreaLeft}
+                                  onVisibleAreaSizingRight={this.resizeVisibleAreaRight}/>
         <div className={'invisible-chart-area-right'} style={invisibleAreaRightStyle}/>
       </div>
     );
   }
 
-  onVisibleAreaDrag = (shiftX) => {
+  dragVisibleArea = (shiftX) => {
     const { canvasWidth, invisibleAreaLeftStyle, invisibleAreaRightStyle } = this.state;
     const oldLeftWidth = invisibleAreaLeftStyle.width;
     const oldRightWidth = invisibleAreaRightStyle.width;
@@ -68,6 +71,32 @@ class OverviewChart extends Component {
       invisibleAreaLeftStyle: { width: newLeftWidth },
       invisibleAreaRightStyle: { width: newRightWidth },
       leftCoefficient: leftCoefficient,
+      rightCoefficient: rightCoefficient
+    }));
+  };
+
+  resizeVisibleAreaLeft = (shiftX) => {
+    const { canvasWidth, invisibleAreaLeftStyle, rightCoefficient } = this.state;
+    const oldLeftWidth = invisibleAreaLeftStyle.width;
+    const newLeftWidth = oldLeftWidth + shiftX;
+    const leftCoefficient = newLeftWidth / canvasWidth;
+    if (leftCoefficient < 0 || ((leftCoefficient + rightCoefficient) > MAX_INVISIBLE_AREA_COEFFICIENT)) return;
+    this.setState((prevState) => ({
+      ...prevState,
+      invisibleAreaLeftStyle: { width: newLeftWidth },
+      leftCoefficient: leftCoefficient
+    }));
+  };
+
+  resizeVisibleAreaRight = (shiftX) => {
+    const { canvasWidth, invisibleAreaRightStyle, leftCoefficient } = this.state;
+    const oldRightWidth = invisibleAreaRightStyle.width;
+    const newRightWidth = oldRightWidth - shiftX;
+    const rightCoefficient = newRightWidth / canvasWidth;
+    if (rightCoefficient < 0 || ((leftCoefficient + rightCoefficient) > MAX_INVISIBLE_AREA_COEFFICIENT)) return;
+    this.setState((prevState) => ({
+      ...prevState,
+      invisibleAreaRightStyle: { width: newRightWidth },
       rightCoefficient: rightCoefficient
     }));
   };
@@ -107,7 +136,10 @@ class OverviewChart extends Component {
       const {
         timestamps, lines, colors, linesVisibility
       } = this.props;
-      const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width);
+      const borderWidth = getComputedStyle(parentDiv)
+        .getPropertyValue('border-width')
+        .replace('px', '');
+      const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
       const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility);
       this.chartPainter.paintChart(modifiedTimestamps, modifiedLines, colors);
     }
