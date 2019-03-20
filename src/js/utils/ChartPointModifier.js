@@ -1,5 +1,3 @@
-const CHART_HEIGHT_COEFFICIENT = 0.9;
-
 class ChartPointModifier {
   sliceMainTimestamps = (originalTimestamps, leftCoefficient, rightCoefficient) => {
     const timestamps = originalTimestamps.slice();
@@ -43,7 +41,7 @@ class ChartPointModifier {
       if (linesVisibility[lineLabel]) {
         const lines = lineArray.slice();
         const label = lines.shift();
-        const modifiedLine = lines.map(linePoint => (linePoint * canvasHeight * CHART_HEIGHT_COEFFICIENT) / max);
+        const modifiedLine = lines.map(linePoint => (linePoint * canvasHeight) / max);
         modifiedLine.unshift(label);
         modifiedLines.push(modifiedLine);
       }
