@@ -37,10 +37,13 @@
 }
 .ui-checkbox-btn.is-checked {
   border: 1px solid #B8B8B8;
-  background-color: #FFFFFF;
   color: #7B9EA8;
   fill: #EBEBEB;
 }
+
+ .ui-checkbox-btn.night {
+   background-color: #293340;
+ }
 
 .icon {
   fill: #7B9EA8;

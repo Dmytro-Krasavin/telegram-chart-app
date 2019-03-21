@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign */
+/* eslint-disable no-return-assign,no-shadow */
 import React, { Component } from 'react';
 import * as chartData from '../../data/chart_data';
 import Chart from '../components/Chart';
@@ -19,11 +19,15 @@ class ChartContainer extends Component {
   }
 
   render() {
-    const chartList = this.state.chartData.map((chart, index) => this.chartDataToComponent(chart, index));
+    const { isNightMode, chartData } = this.state;
+    const modeClass = isNightMode ? 'mode night' : 'mode day';
+    const chartList = chartData.map((chart, index) => this.chartDataToComponent(chart, index, isNightMode));
     return (
-      <div className={'chart-page-container'}>
-        {chartList}
-        <SwitchModeButton isNightMode={this.state.isNightMode} switchModeHandler={this.switchMode}/>
+      <div className={modeClass}>
+        <div className={'chart-page-container'}>
+          {chartList}
+          <SwitchModeButton isNightMode={isNightMode} switchModeHandler={this.switchMode}/>
+        </div>
       </div>
     );
   }
@@ -43,7 +47,7 @@ class ChartContainer extends Component {
     }));
   };
 
-  chartDataToComponent = (chart, index) => {
+  chartDataToComponent = (chart, index, isNightMode) => {
     const {
       columns, types, names, colors
     } = chart;
@@ -51,7 +55,8 @@ class ChartContainer extends Component {
     const timestamps = columns.find(column => types[column[0]] === TIMESTAMP_TYPE);
 
     const linesVisibility = {};
-    Object.keys(names).forEach(name => linesVisibility[name] = true);
+    Object.keys(names)
+      .forEach(name => linesVisibility[name] = true);
 
     return (
       <Chart key={index}
@@ -59,9 +64,11 @@ class ChartContainer extends Component {
              lines={linesArray}
              names={names}
              colors={colors}
-             initialLinesVisibility={linesVisibility}/>
+             initialLinesVisibility={linesVisibility}
+             isNightMode={isNightMode}
+      />
     );
-  }
+  };
 }
 
 export default ChartContainer;

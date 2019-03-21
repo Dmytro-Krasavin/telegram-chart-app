@@ -49,7 +49,7 @@ class Chart extends Component {
   render() {
     const { linesVisibility, leftCoefficient, rightCoefficient } = this.state;
     const {
-      timestamps, lines, names, colors
+      timestamps, lines, names, colors, isNightMode
     } = this.props;
     const buttons = lines.map((linePoints, index) => this.linePointsToButtons(linePoints, index, names, colors));
 
@@ -80,6 +80,7 @@ class Chart extends Component {
                            leftCoefficient={leftCoefficient}
                            rightCoefficient={rightCoefficient}
                            setVisibleCoefficients={this.setVisibleCoefficients}
+                           isNightMode={isNightMode}
             />
           </div>
         </div>

@@ -1,3 +1,20 @@
+.mode {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-sizing: content-box;
+}
+
+.mode.day {
+    background-color: #FFFFFF;
+}
+
+.mode.night {
+    background-color: #293340;
+}
+
 .chart-container {
     width: 95%;
     align-content: center;
@@ -27,6 +44,10 @@
     bottom: 0;
     left: 0;
     border-top: 1px solid #DDDDDD;
+}
+
+.switch-mode-container.night {
+    background-color: #293340;
 }
 
 .switch-mode-button {

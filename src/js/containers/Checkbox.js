@@ -20,16 +20,22 @@ class Checkbox extends PureComponent {
   ping = () => this.setState({ isAnimating: false });
 
   composeStateClasses = (core) => {
+    const { checked, isAnimating } = this.state;
+    const { isNightMode } = this.props;
     let result = core;
 
-    if (this.state.checked) {
+    if (checked) {
       result += ' is-checked';
     } else {
       result += ' is-unchecked';
     }
 
-    if (this.state.isAnimating) {
+    if (isAnimating) {
       result += ' do-ping';
+    }
+
+    if (isNightMode) {
+      result += ' night';
     }
     return result;
   };

@@ -1,17 +1,17 @@
-.overview-canvas-container{
+.overview-canvas-container {
     touch-action: none;
     border: 1px solid #EBEBEB;
     display: flex;
     align-content: center;
 }
 
-.main-canvas-container{
+.main-canvas-container {
     display: flex;
     align-content: center;
     margin-bottom: 50px;
 }
 
-.invisible-chart-area-right{
+.invisible-chart-area-right {
     display: flex;
     background-color: #EBEBEB;
     height: 100%;
@@ -20,13 +20,21 @@
     right: 1rem;
 }
 
-.invisible-chart-area-left{
+.invisible-chart-area-right.night {
+    background-color: #1D232F;
+}
+
+.invisible-chart-area-left {
     display: flex;
     background-color: #EBEBEB;
     height: 100%;
     opacity: 0.5;
     position: absolute;
     left: 1rem;
+}
+
+.invisible-chart-area-left.night {
+    background-color: #1D232F;
 }
 
 .visible-chart-area {

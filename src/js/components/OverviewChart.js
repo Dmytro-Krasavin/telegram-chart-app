@@ -123,22 +123,28 @@ class OverviewChart extends Component {
   };
 
   render() {
-    const { height } = this.props;
+    const { height, isNightMode } = this.props;
     const { canvasWidth, invisibleAreaLeftStyle, invisibleAreaRightStyle } = this.state;
     const visibleAreaStyle = {
       left: invisibleAreaLeftStyle.width + VISIBLE_AREA_BORDER,
       right: invisibleAreaRightStyle.width + VISIBLE_AREA_BORDER
     };
+    let invisibleAreaLeftClass = 'invisible-chart-area-left';
+    let invisibleAreaRightClass = 'invisible-chart-area-right';
+    if (isNightMode) {
+      invisibleAreaLeftClass += ' night';
+      invisibleAreaRightClass += ' night';
+    }
     return (
       <div className={'overview-canvas-container'}>
         <canvas ref={this.overviewChart} height={height} width={canvasWidth}>
         </canvas>
-        <div className={'invisible-chart-area-left'} style={invisibleAreaLeftStyle}/>
+        <div className={invisibleAreaLeftClass} style={invisibleAreaLeftStyle}/>
         <VisibleOverviewChartArea style={visibleAreaStyle}
                                   onVisibleAreaDrag={this.dragVisibleArea}
                                   onVisibleAreaSizingLeft={this.resizeVisibleAreaLeft}
                                   onVisibleAreaSizingRight={this.resizeVisibleAreaRight}/>
-        <div className={'invisible-chart-area-right'} style={invisibleAreaRightStyle}/>
+        <div className={invisibleAreaRightClass} style={invisibleAreaRightStyle}/>
       </div>
     );
   }
