@@ -5,8 +5,8 @@ const X_AXIS_LINES_NUMBER = 6;
 // const DATE_LABELS_NUMBER = 6;
 const GRID_COLOR = '#EBEBEB';
 const TEXT_COLOR = '#7B9EA8';
-const TEXT_FONT = '25px Helvetica';
-const TEXT_MARGIN = 7;
+const TEXT_FONT = '30px Helvetica';
+const TEXT_MARGIN = 10;
 const GRID_LINE_WIDTH = 1;
 
 class ChartPainter {

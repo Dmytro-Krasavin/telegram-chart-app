@@ -4,7 +4,7 @@ import ChartPainter from '../utils/ChartPainter';
 import VisibleOverviewChartArea from './VisibleOverviewChartArea';
 
 const VISIBLE_AREA_BORDER = 15;
-const MAX_INVISIBLE_AREA_COEFFICIENT = 0.9;
+const MAX_INVISIBLE_AREA_COEFFICIENT = 0.85;
 const OVERVIEW_LINE_WIDTH = 1;
 const OVERVIEW_LINE_JOIN = 'round';
 

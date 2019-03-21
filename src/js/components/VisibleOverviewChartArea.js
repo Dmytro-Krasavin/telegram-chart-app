@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-expressions */
 import React, { Component } from 'react';
 
+const TOUCH_AREA = 20;
+
 class VisibleOverviewChartArea extends Component {
   state = {
     dragging: false,
-    shiftX: 0,
-    posX: 0,
     resizingLeft: false,
-    resizingRight: false
+    resizingRight: false,
+    posX: 0,
+    shiftX: 0
   };
 
   componentDidUpdate(props, state) {
@@ -26,15 +28,16 @@ class VisibleOverviewChartArea extends Component {
 
   onMouseDown = (e) => {
     if (e.button === 0 || e.touches) {
-      const event = e.touches ? e.touches[0] : e;
+      const isTouch = !!e.touches;
+      const event = isTouch ? e.touches[0] : e;
       const { pageX, target } = event;
       const borderWidth = getComputedStyle(target)
         .getPropertyValue('border-left-width')
         .replace('px', '');
 
       const offsetX = pageX - borderWidth - target.getBoundingClientRect().left;
-      const isLeftBorder = offsetX < 0;
-      const isRightBorder = offsetX > target.clientWidth;
+      const isLeftBorder = isTouch ? offsetX - TOUCH_AREA < 0 : offsetX < 0;
+      const isRightBorder = isTouch ? offsetX + TOUCH_AREA > target.clientWidth : offsetX > target.clientWidth;
       this.setState((prevState) => ({
         ...prevState,
         dragging: true,
