@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types,no-unused-expressions */
+/* eslint-disable no-unused-expressions */
 import React, { Component } from 'react';
 
 class VisibleOverviewChartArea extends Component {

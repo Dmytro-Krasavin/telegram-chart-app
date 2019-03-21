@@ -2,7 +2,7 @@
 
 const CHART_DISPLAY_HEIGHT_COEFFICIENT = 0.9;
 const X_AXIS_LINES_NUMBER = 6;
-const DATE_LABELS_NUMBER = 6;
+// const DATE_LABELS_NUMBER = 6;
 const GRID_COLOR = '#EBEBEB';
 const TEXT_COLOR = '#7B9EA8';
 const TEXT_FONT = '12px Helvetica';
@@ -45,10 +45,10 @@ class ChartPainter {
 
       let displayedValue = valueY.toString();
       if (valueY > 1000) {
-        displayedValue = `${(valueY / 1000).toFixed(1)} K`;
+        displayedValue = `${(valueY / 1000).toFixed(1)}K`;
       }
       if (valueY > 1000000) {
-        displayedValue = `${(valueY / 1000000).toFixed(1)} M`;
+        displayedValue = `${(valueY / 1000000).toFixed(1)}M`;
       }
 
       ctx.font = TEXT_FONT;

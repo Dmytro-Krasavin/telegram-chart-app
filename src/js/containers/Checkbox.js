@@ -1,5 +1,4 @@
-/* eslint-disable consistent-return,react/prop-types */
-/* eslint-disable max-len */
+/* eslint-disable consistent-return, max-len */
 
 import React, { PureComponent } from 'react';
 

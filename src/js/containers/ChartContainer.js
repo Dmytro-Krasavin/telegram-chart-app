@@ -1,4 +1,4 @@
-/* eslint-disable no-console,no-return-assign */
+/* eslint-disable no-return-assign */
 import React, { Component } from 'react';
 import * as chartData from '../../data/chart_data';
 import Chart from '../components/Chart';

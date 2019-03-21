@@ -6,10 +6,23 @@
       "jsx": true
     }
   },
-  "extends": ["plugin:react/recommended", "airbnb-base/legacy"],
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb-base/legacy"
+  ],
   "rules": {
     "class-methods-use-this": "off",
-    "max-len": ["error", 150]
+    "max-len": [
+      "error",
+      150
+    ],
+    "react/prop-types": "off",
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ]
   },
   "parser": "babel-eslint"
 }

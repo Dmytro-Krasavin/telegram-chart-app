@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types,no-plusplus */
 import React, { Component } from 'react';
 import Checkbox from '../containers/Checkbox';
 import OverviewChart from './OverviewChart';
