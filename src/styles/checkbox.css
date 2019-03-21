@@ -13,7 +13,9 @@
   display: none;
 }
 
-.ui-checkbox-btn .icon,
+.ui-checkbox-btn .icon {
+  margin-left: 10px;
+}
 .ui-checkbox-btn .text {
   display: inline-block;
   vertical-align: top;
@@ -52,12 +54,12 @@
 }
 .icon svg {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 5px;
+  right: 2px;
   bottom: 0;
   left: 0;
   margin: auto;
-  width: 40px;
+  width: 50px;
   height: auto;
   fill: inherit;
 }

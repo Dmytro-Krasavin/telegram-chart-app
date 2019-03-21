@@ -9,7 +9,6 @@ class Checkbox extends PureComponent {
   };
 
   toggleChecked = () => {
-    if (this.state.isAnimating) return;
     const checkedState = !this.state.checked;
     this.setState({
       checked: checkedState,
@@ -18,9 +17,7 @@ class Checkbox extends PureComponent {
     this.props.checkboxHandler(this.props.label, checkedState);
   };
 
-  ping = () => {
-    this.setState({ isAnimating: false });
-  };
+  ping = () => this.setState({ isAnimating: false });
 
   composeStateClasses = (core) => {
     let result = core;
