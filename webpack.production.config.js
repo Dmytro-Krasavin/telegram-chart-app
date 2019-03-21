@@ -1,7 +1,13 @@
 const path = require('path');
+const glob = require('glob');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+
+const PATHS = {
+  src: path.join(__dirname, 'src')
+};
 
 const conf = {
 
@@ -48,8 +54,15 @@ const conf = {
 
   plugins: [
     new ExtractTextPlugin('styles.css'),
+    new PurgecssPlugin({
+      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
+    }),
     new HtmlWebpackPlugin({
-      title: 'Departments',
+      title: 'Chart App',
+      minify: {
+        collapseWhitespace: true
+      },
+      hash: true,
       template: 'src/html/template.html'
     })
   ],

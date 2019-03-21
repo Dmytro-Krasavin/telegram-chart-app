@@ -3,8 +3,8 @@ import Checkbox from '../containers/Checkbox';
 import OverviewChart from './OverviewChart';
 import MainChart from './MainChart';
 
-const MAIN_CHART_HEIGHT = 300;
-const OVERVIEW_CHART_HEIGHT = 40;
+const MAIN_CHART_HEIGHT = 800;
+const OVERVIEW_CHART_HEIGHT = 120;
 const INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.75;
 const INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT = 0;
 
@@ -37,7 +37,7 @@ class Chart extends Component {
     const name = names[label];
     const color = colors[label];
     return (
-      <div key={index} className={'col'}>
+      <div key={index} className={'col-sm-3'}>
         <Checkbox key={index}
                   color={color}
                   checkboxHandler={this.checkboxHandler}

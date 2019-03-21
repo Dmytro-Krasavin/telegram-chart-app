@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, max-len */
+/* eslint-disable max-len */
 
 import React, { PureComponent } from 'react';
 
@@ -9,7 +9,7 @@ class Checkbox extends PureComponent {
   };
 
   toggleChecked = () => {
-    if (this.state.isAnimating) return false;
+    if (this.state.isAnimating) return;
     const checkedState = !this.state.checked;
     this.setState({
       checked: checkedState,
