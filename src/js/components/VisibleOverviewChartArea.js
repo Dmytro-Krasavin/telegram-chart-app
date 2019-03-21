@@ -14,32 +14,38 @@ class VisibleOverviewChartArea extends Component {
     if (this.state.dragging && !state.dragging) {
       document.addEventListener('mousemove', this.onMouseMove);
       document.addEventListener('mouseup', this.onMouseUp);
+      document.addEventListener('touchmove', this.onMouseMove);
+      document.addEventListener('touchend', this.onMouseUp);
     } else if (!this.state.dragging && state.dragging) {
       document.removeEventListener('mousemove', this.onMouseMove);
       document.removeEventListener('mouseup', this.onMouseUp);
+      document.removeEventListener('touchmove', this.onMouseMove);
+      document.removeEventListener('touchend', this.onMouseUp);
     }
   }
 
   onMouseDown = (e) => {
-    if (e.button !== 0) return;
-    const { pageX, target } = e;
-    const borderWidth = getComputedStyle(target)
-      .getPropertyValue('border-left-width')
-      .replace('px', '');
+    if (e.button === 0 || e.touches) {
+      const event = e.touches ? e.touches[0] : e;
+      const { pageX, target } = event;
+      const borderWidth = getComputedStyle(target)
+        .getPropertyValue('border-left-width')
+        .replace('px', '');
 
-    const offsetX = pageX - borderWidth - target.getBoundingClientRect().left;
-    const isLeftBorder = offsetX < 0;
-    const isRightBorder = offsetX > target.clientWidth;
-    this.setState((prevState) => ({
-      ...prevState,
-      dragging: true,
-      resizingLeft: isLeftBorder,
-      resizingRight: isRightBorder,
-      posX: pageX
-    }));
+      const offsetX = pageX - borderWidth - target.getBoundingClientRect().left;
+      const isLeftBorder = offsetX < 0;
+      const isRightBorder = offsetX > target.clientWidth;
+      this.setState((prevState) => ({
+        ...prevState,
+        dragging: true,
+        resizingLeft: isLeftBorder,
+        resizingRight: isRightBorder,
+        posX: pageX
+      }));
 
-    e.stopPropagation();
-    e.preventDefault();
+      e.stopPropagation();
+      e.preventDefault();
+    }
   };
 
   onMouseUp = (e) => {
@@ -55,12 +61,13 @@ class VisibleOverviewChartArea extends Component {
 
   onMouseMove = (e) => {
     if (!this.state.dragging) return;
+    const event = e.touches ? e.touches[0] : e;
     const oldPosX = this.state.posX;
 
     this.setState((prevState) => ({
       ...prevState,
-      shiftX: e.pageX - oldPosX,
-      posX: e.pageX
+      shiftX: event.pageX - oldPosX,
+      posX: event.pageX
     }));
     e.stopPropagation();
     e.preventDefault();
@@ -74,7 +81,7 @@ class VisibleOverviewChartArea extends Component {
 
   render() {
     return (
-      <div className={'visible-chart-area'} style={this.props.style} onMouseDown={this.onMouseDown}/>
+      <div className={'visible-chart-area'} style={this.props.style} onMouseDown={this.onMouseDown} onTouchStart={this.onMouseDown}/>
     );
   }
 }

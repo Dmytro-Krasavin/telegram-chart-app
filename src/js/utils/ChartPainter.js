@@ -5,7 +5,7 @@ const X_AXIS_LINES_NUMBER = 6;
 // const DATE_LABELS_NUMBER = 6;
 const GRID_COLOR = '#EBEBEB';
 const TEXT_COLOR = '#7B9EA8';
-const TEXT_FONT = '12px Helvetica';
+const TEXT_FONT = '25px Helvetica';
 const TEXT_MARGIN = 7;
 const GRID_LINE_WIDTH = 1;
 
@@ -33,15 +33,15 @@ class ChartPainter {
     ctx.lineWidth = GRID_LINE_WIDTH;
     ctx.strokeStyle = GRID_COLOR;
     const step = canvasHeight / X_AXIS_LINES_NUMBER;
-    let posY = canvasHeight - step + 1;
-    for (let i = 0; i < X_AXIS_LINES_NUMBER + 1; i++) {
+    let posY = canvasHeight - step + GRID_LINE_WIDTH;
+    for (let i = 0; i < X_AXIS_LINES_NUMBER + GRID_LINE_WIDTH; i++) {
       let modifiedPosY = canvasHeight - posY;
       ctx.beginPath();
       ctx.moveTo(0, modifiedPosY);
       ctx.lineTo(canvasWidth, modifiedPosY);
       ctx.stroke();
 
-      const valueY = Math.floor((((posY - 1) / canvasHeight) * max) / CHART_DISPLAY_HEIGHT_COEFFICIENT);
+      const valueY = Math.floor(((((posY - GRID_LINE_WIDTH) / canvasHeight) * max) / CHART_DISPLAY_HEIGHT_COEFFICIENT) + GRID_LINE_WIDTH);
 
       let displayedValue = valueY.toString();
       if (valueY > 1000) {

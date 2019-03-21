@@ -1,9 +1,9 @@
 class ChartPointModifier {
   sliceMainTimestamps = (originalTimestamps, leftCoefficient, rightCoefficient) => {
-    const timestamps = originalTimestamps.slice();
+    const timestamps = [...originalTimestamps];
     const label = timestamps.shift();
-    const startIndex = Math.ceil(timestamps.length * leftCoefficient);
-    const endIndex = Math.floor(timestamps.length * (1 - rightCoefficient));
+    const startIndex = Math.floor(timestamps.length * leftCoefficient);
+    const endIndex = Math.ceil(timestamps.length * (1 - rightCoefficient));
     const mainTimestamps = timestamps.slice(startIndex, endIndex);
     mainTimestamps.unshift(label);
     return mainTimestamps;
@@ -12,10 +12,10 @@ class ChartPointModifier {
   sliceMainLines = (originalLines, leftCoefficient, rightCoefficient) => {
     const modifiedMainLines = [];
     originalLines.forEach(lineArray => {
-      const lines = lineArray.slice();
+      const lines = [...lineArray];
       const label = lines.shift();
-      const startIndex = Math.ceil(lines.length * leftCoefficient);
-      const endIndex = Math.floor(lines.length * (1 - rightCoefficient));
+      const startIndex = Math.floor(lines.length * leftCoefficient);
+      const endIndex = Math.ceil(lines.length * (1 - rightCoefficient));
       const mainLines = lines.slice(startIndex, endIndex);
       mainLines.unshift(label);
       modifiedMainLines.push(mainLines);
@@ -24,7 +24,7 @@ class ChartPointModifier {
   };
 
   modifyTimestamps = (originalTimestamps, canvasWidth, borderWidth) => {
-    const timestamps = originalTimestamps.slice();
+    const timestamps = [...originalTimestamps];
     const label = timestamps.shift();
     const min = Math.min(...timestamps);
     const max = Math.max(...timestamps);
@@ -39,7 +39,7 @@ class ChartPointModifier {
     originalLines.forEach(lineArray => {
       const lineLabel = lineArray[0];
       if (linesVisibility[lineLabel]) {
-        const lines = lineArray.slice();
+        const lines = [...lineArray];
         const label = lines.shift();
         const modifiedLine = lines.map(linePoint => (linePoint * canvasHeight) / max);
         modifiedLine.unshift(label);
@@ -54,7 +54,7 @@ class ChartPointModifier {
     originalLines.forEach(lineArray => {
       const lineLabel = lineArray[0];
       if (linesVisibility[lineLabel]) {
-        const lines = lineArray.slice();
+        const lines = [...lineArray];
         const label = lines.shift();
         max = Math.max(...lines, max);
         lines.unshift(label);

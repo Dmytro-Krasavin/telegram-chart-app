@@ -35,8 +35,8 @@
 }
 .ui-checkbox-btn.is-checked {
   border: 1px solid #B8B8B8;
-  background-color: #FFFFFF; /*button background*/
-  color: #7B9EA8; /*text*/
+  background-color: #FFFFFF;
+  color: #7B9EA8;
   fill: #EBEBEB;
 }
 
@@ -62,7 +62,7 @@
   fill: inherit;
 }
 .is-checked .icon {
-  fill: white; /*mark colour*/
+  fill: white;
 }
 
 .ui-btn-ping {
