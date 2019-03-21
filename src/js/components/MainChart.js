@@ -44,7 +44,7 @@ class MainChart extends Component {
       const max = ChartPointModifier.getMaxValueInLinePoints(slicedLines, linesVisibility);
       const modifiedTimestamps = ChartPointModifier.modifyTimestamps(slicedTimestamps, canvas.width, borderWidth);
       const modifiedLines = ChartPointModifier.modifyLines(slicedLines, canvas.height, linesVisibility, max);
-      ChartPainter.paintCoordinateGrid(ctx, canvas.height, canvas.width, max);
+      ChartPainter.paintCoordinateGrid(ctx, canvas.height, canvas.width, max, slicedTimestamps);
       ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, MAIN_LINE_WIDTH);
     }
     return canvas;
