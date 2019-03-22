@@ -58,7 +58,6 @@ const conf = {
       paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
     }),
     new HtmlWebpackPlugin({
-      title: 'Chart App',
       minify: {
         collapseWhitespace: true
       },
