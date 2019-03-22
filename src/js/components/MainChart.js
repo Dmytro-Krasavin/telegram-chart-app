@@ -105,8 +105,8 @@ class MainChart extends Component {
         }
       }
     }
-    e.stopPropagation();
-    e.preventDefault();
+    // e.stopPropagation();
+    // e.preventDefault();
   };
 
   render() {

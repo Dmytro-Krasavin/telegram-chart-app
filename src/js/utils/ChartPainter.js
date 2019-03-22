@@ -13,6 +13,7 @@ const TEXT_FONT = '30px Helvetica';
 const TEXT_MARGIN = 10;
 const DATE_MARGIN = 60;
 const GRID_LINE_WIDTH = 1;
+const LABLE_LINE_WIDTH = 3;
 const CIRCLE_RADIUS = 15;
 const CIRCLE_START_ANGLE = 0;
 const CIRCLE_END_ANGLE = 2 * Math.PI;
@@ -117,29 +118,32 @@ class ChartPainter {
 
     const step = canvasWidth / (timestamps.length - 1);
     const index = Math.round(offsetX / step) + 1;
+    const timestampPosX = modifiedTimestamps[index];
 
     ctx.lineWidth = GRID_LINE_WIDTH;
     ctx.strokeStyle = isNightMode ? GRID_COLOR_NIGHT : GRID_COLOR_DAY;
     ctx.fillStyle = isNightMode ? NIGHT_COLOR : DAY_COLOR;
     ctx.beginPath();
-    ctx.moveTo(modifiedTimestamps[index], 0);
-    ctx.lineTo(modifiedTimestamps[index], endY);
+    ctx.moveTo(timestampPosX, 0);
+    ctx.lineTo(timestampPosX, endY);
     ctx.stroke();
 
-    const startLabelContentPosY = canvasHeight / X_AXIS_LINES_NUMBER;
+    const startLabelContentPosY = (canvasHeight / (X_AXIS_LINES_NUMBER + 1));
+    const lineStep = startLabelContentPosY / 4;
+    ctx.lineWidth = LABLE_LINE_WIDTH;
     ctx.beginPath();
-    ctx.moveTo(modifiedTimestamps[index], startLabelContentPosY);
-    ctx.lineTo(modifiedTimestamps[index] + 25, startLabelContentPosY - 25);
-    ctx.lineTo(modifiedTimestamps[index] + 25, startLabelContentPosY - 75);
-    ctx.quadraticCurveTo(modifiedTimestamps[index] + 25, startLabelContentPosY - 100, modifiedTimestamps[index] + 50, startLabelContentPosY - 100);
-    ctx.lineTo(modifiedTimestamps[index] + 300, startLabelContentPosY - 100);
-    ctx.quadraticCurveTo(modifiedTimestamps[index] + 325, startLabelContentPosY - 100, modifiedTimestamps[index] + 325, startLabelContentPosY - 75);
-    ctx.lineTo(modifiedTimestamps[index] + 325, startLabelContentPosY + 100);
-    ctx.quadraticCurveTo(modifiedTimestamps[index] + 325, startLabelContentPosY + 125, modifiedTimestamps[index] + 300, startLabelContentPosY + 125);
-    ctx.lineTo(modifiedTimestamps[index] + 50, startLabelContentPosY + 125);
-    ctx.quadraticCurveTo(modifiedTimestamps[index] + 25, startLabelContentPosY + 125, modifiedTimestamps[index] + 25, startLabelContentPosY + 100);
-    ctx.lineTo(modifiedTimestamps[index] + 25, startLabelContentPosY + 25);
-    ctx.lineTo(modifiedTimestamps[index], startLabelContentPosY);
+    ctx.moveTo(timestampPosX, startLabelContentPosY);
+    ctx.lineTo(timestampPosX + lineStep, 3 * lineStep);
+    ctx.lineTo(timestampPosX + lineStep, lineStep);
+    ctx.quadraticCurveTo(timestampPosX + lineStep, 0, timestampPosX + 2 * lineStep, 0);
+    ctx.lineTo(timestampPosX + 12 * lineStep, 0);
+    ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, 0, timestampPosX + 13 * lineStep, lineStep);
+    ctx.lineTo(timestampPosX + 13 * lineStep, 8 * lineStep);
+    ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, 9 * lineStep, timestampPosX + 12 * lineStep, 9 * lineStep);
+    ctx.lineTo(timestampPosX + 2 * lineStep, 9 * lineStep);
+    ctx.quadraticCurveTo(timestampPosX + lineStep, 9 * lineStep, timestampPosX + lineStep, 8 * lineStep);
+    ctx.lineTo(timestampPosX + lineStep, 5 * lineStep);
+    ctx.lineTo(timestampPosX, startLabelContentPosY);
     ctx.stroke();
     ctx.fill();
 
@@ -151,20 +155,20 @@ class ChartPainter {
       ctx.strokeStyle = colors[lineLabel];
 
       ctx.beginPath();
-      ctx.moveTo(modifiedTimestamps[index], compressedPosY);
-      ctx.arc(modifiedTimestamps[index], compressedPosY, CIRCLE_RADIUS, CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
+      ctx.moveTo(timestampPosX, compressedPosY);
+      ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS, CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(modifiedTimestamps[index], compressedPosY);
-      ctx.arc(modifiedTimestamps[index], compressedPosY, CIRCLE_RADIUS - (chartLineWidth / 2), CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
+      ctx.moveTo(timestampPosX, compressedPosY);
+      ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS - (chartLineWidth / 2), CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
       ctx.fill();
 
       if (index <= 1 || index >= modifiedTimestamps.length - 1) {
         ctx.lineWidth = chartLineWidth * 2;
         ctx.beginPath();
-        ctx.moveTo(modifiedTimestamps[index], compressedPosY - CIRCLE_RADIUS);
-        ctx.lineTo(modifiedTimestamps[index], compressedPosY + CIRCLE_RADIUS);
+        ctx.moveTo(timestampPosX, compressedPosY - CIRCLE_RADIUS);
+        ctx.lineTo(timestampPosX, compressedPosY + CIRCLE_RADIUS);
         ctx.stroke();
       }
     }
