@@ -3,10 +3,10 @@
 const CHART_DISPLAY_HEIGHT_COEFFICIENT = 0.9;
 const X_AXIS_LINES_NUMBER = 6;
 const DATE_LABELS_NUMBER = 6;
-const GRID_COLOR = '#EBEBEB';
+const GRID_COLOR_DAY = '#E8EAEB';
+const GRID_COLOR_NIGHT = '#3D4B5A';
 const TEXT_COLOR = '#7B9EA8';
 const TEXT_FONT = '30px Helvetica';
-const DATE_FONT = '25px Helvetica';
 const TEXT_MARGIN = 10;
 const DATE_MARGIN = 60;
 const GRID_LINE_WIDTH = 1;
@@ -34,10 +34,10 @@ class ChartPainter {
     ctx.restore();
   };
 
-  paintCoordinateGrid = (ctx, canvasHeight, canvasWidth, max, slicedTimestamps) => {
+  paintCoordinateGrid = (ctx, canvasHeight, canvasWidth, max, slicedTimestamps, isNightMode) => {
     ctx.save();
     ctx.lineWidth = GRID_LINE_WIDTH;
-    ctx.strokeStyle = GRID_COLOR;
+    ctx.strokeStyle = isNightMode ? GRID_COLOR_NIGHT : GRID_COLOR_DAY;
     ctx.fillStyle = TEXT_COLOR;
     this.paintXAxis(ctx, canvasHeight, canvasWidth, max);
     this.paintDateLabels(ctx, canvasHeight, canvasWidth, slicedTimestamps);
@@ -73,7 +73,7 @@ class ChartPainter {
   };
 
   paintDateLabels = (ctx, canvasHeight, canvasWidth, slicedTimestamps) => {
-    ctx.font = DATE_FONT;
+    ctx.font = TEXT_FONT;
     const label = slicedTimestamps.shift();
     const step = canvasWidth / DATE_LABELS_NUMBER;
     let posX = step / 2;
@@ -90,8 +90,7 @@ class ChartPainter {
   formatDate = (date) => {
     const day = date.getDate();
     const monthIndex = date.getMonth();
-    const year = date.getFullYear();
-    return `${day} ${MONTH_NAMES[monthIndex]} ${year}`;
+    return `${MONTH_NAMES[monthIndex]} ${day} `;
   };
 }
 

@@ -66,6 +66,7 @@ class Chart extends Component {
                        leftCoefficient={leftCoefficient}
                        rightCoefficient={rightCoefficient}
                        setVisibleCoefficients={this.setVisibleCoefficients}
+                       isNightMode={isNightMode}
             />
           </div>
         </div>

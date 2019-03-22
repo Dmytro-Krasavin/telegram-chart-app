@@ -4,7 +4,6 @@
     top: 0;
     left: 0;
     z-index: 1000;
-    box-sizing: content-box;
 }
 
 .mode.day {
@@ -13,10 +12,6 @@
 
 .mode.night {
     background-color: #293340;
-}
-
-*, ::after, ::before {
-    box-sizing: content-box;
 }
 
 .chart-container {
@@ -52,6 +47,7 @@
 
 .switch-mode-container.night {
     background-color: #293340;
+    border-color: #3D4B5A;
 }
 
 .switch-mode-button {

@@ -6,6 +6,7 @@ import SwitchModeButton from '../components/SwitchModeButton';
 
 const TIMESTAMP_TYPE = 'x';
 const LINE_TYPE = 'line';
+const NIGHT_COLOR = '#293340';
 
 class ChartContainer extends Component {
   state = {
@@ -41,9 +42,11 @@ class ChartContainer extends Component {
 
   switchMode = (event) => {
     event.preventDefault();
+    const currentIsNightMode = !this.state.isNightMode;
+    document.body.style.backgroundColor = currentIsNightMode ? NIGHT_COLOR : '';
     this.setState((prevState) => ({
       ...prevState,
-      isNightMode: !this.state.isNightMode
+      isNightMode: currentIsNightMode
     }));
   };
 
