@@ -15,6 +15,10 @@
     background-color: #293340;
 }
 
+*, ::after, ::before {
+    box-sizing: content-box;
+}
+
 .chart-container {
     width: 95%;
     align-content: center;
