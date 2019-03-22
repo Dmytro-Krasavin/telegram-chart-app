@@ -4,6 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const PATHS = {
   src: path.join(__dirname, 'src')
@@ -63,7 +64,8 @@ const conf = {
       },
       template: 'src/html/template.html'
     }),
-    new UglifyJsPlugin()
+    new UglifyJsPlugin(),
+    new CleanWebpackPlugin()
   ],
 
   optimization: {
