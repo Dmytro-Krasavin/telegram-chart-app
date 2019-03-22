@@ -14,7 +14,6 @@ const conf = {
   entry: './src/js/index.js',
 
   output: {
-    publicPath: '/',
     path: path.resolve(__dirname, './dist'),
     filename: '[hash]bundle.js'
   },
@@ -62,17 +61,27 @@ const conf = {
       minify: {
         collapseWhitespace: true
       },
-      hash: true,
       template: 'src/html/template.html'
-    })
+    }),
+    new UglifyJsPlugin()
   ],
 
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
+        test: /\.js(\?.*)?$/i,
         parallel: true,
         uglifyOptions: {
-          compress: true
+          compress: {
+            sequences: true,
+            dead_code: true,
+            conditionals: true,
+            booleans: true,
+            unused: true,
+            if_return: true,
+            join_vars: true,
+            drop_console: true
+          }
         }
       })
     ]
