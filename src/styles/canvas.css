@@ -6,9 +6,18 @@
 }
 
 .main-canvas-container {
+    touch-action: none;
+    position: relative;
     display: flex;
     align-content: center;
     margin-bottom: 50px;
+}
+
+.label-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0
 }
 
 .invisible-chart-area-right {

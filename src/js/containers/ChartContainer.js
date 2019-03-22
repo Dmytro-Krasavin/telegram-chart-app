@@ -4,9 +4,10 @@ import * as chartData from '../../data/chart_data';
 import Chart from '../components/Chart';
 import SwitchModeButton from '../components/SwitchModeButton';
 
+export const DAY_COLOR = '#FFFFFF';
+export const NIGHT_COLOR = '#293340';
 const TIMESTAMP_TYPE = 'x';
 const LINE_TYPE = 'line';
-const NIGHT_COLOR = '#293340';
 
 class ChartContainer extends Component {
   state = {
@@ -43,7 +44,7 @@ class ChartContainer extends Component {
   switchMode = (event) => {
     event.preventDefault();
     const currentIsNightMode = !this.state.isNightMode;
-    document.body.style.backgroundColor = currentIsNightMode ? NIGHT_COLOR : '';
+    document.body.style.backgroundColor = currentIsNightMode ? NIGHT_COLOR : DAY_COLOR;
     this.setState((prevState) => ({
       ...prevState,
       isNightMode: currentIsNightMode

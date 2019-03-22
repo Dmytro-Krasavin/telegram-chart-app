@@ -9,16 +9,19 @@ class ChartPointModifier {
     return mainTimestamps;
   };
 
-  sliceMainLines = (originalLines, leftCoefficient, rightCoefficient) => {
+  sliceMainLines = (originalLines, leftCoefficient, rightCoefficient, linesVisibility) => {
     const modifiedMainLines = [];
     originalLines.forEach(lineArray => {
-      const lines = [...lineArray];
-      const label = lines.shift();
-      const startIndex = Math.floor(lines.length * leftCoefficient);
-      const endIndex = Math.ceil(lines.length * (1 - rightCoefficient));
-      const mainLines = lines.slice(startIndex, endIndex);
-      mainLines.unshift(label);
-      modifiedMainLines.push(mainLines);
+      const lineLabel = lineArray[0];
+      if (linesVisibility[lineLabel]) {
+        const lines = [...lineArray];
+        const label = lines.shift();
+        const startIndex = Math.floor(lines.length * leftCoefficient);
+        const endIndex = Math.ceil(lines.length * (1 - rightCoefficient));
+        const mainLines = lines.slice(startIndex, endIndex);
+        mainLines.unshift(label);
+        modifiedMainLines.push(mainLines);
+      }
     });
     return modifiedMainLines;
   };
