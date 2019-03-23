@@ -6,7 +6,6 @@ import VisibleOverviewChartArea from './VisibleOverviewChartArea';
 const VISIBLE_AREA_BORDER = 15;
 const MAX_INVISIBLE_AREA_COEFFICIENT = 0.85;
 const OVERVIEW_LINE_WIDTH = 1;
-const OVERVIEW_LINE_JOIN = 'round';
 
 class OverviewChart extends Component {
   overviewChart = React.createRef();
@@ -74,8 +73,7 @@ class OverviewChart extends Component {
     if (rightCoefficient < 0 || ((leftCoefficient + rightCoefficient) > MAX_INVISIBLE_AREA_COEFFICIENT)) return;
     this.setState((prevState) => ({
       ...prevState,
-      invisibleAreaRightStyle: { width: newRightWidth },
-      rightCoefficient: rightCoefficient
+      invisibleAreaRightStyle: { width: newRightWidth }
     }));
     this.props.setVisibleCoefficients(leftCoefficient, rightCoefficient);
   };
@@ -106,8 +104,6 @@ class OverviewChart extends Component {
     canvas.width = parentDiv.offsetWidth;
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
-      ctx.lineJoin = OVERVIEW_LINE_JOIN;
-
       const {
         timestamps, lines, colors, linesVisibility
       } = this.props;

@@ -1,33 +1,22 @@
-/* eslint-disable no-plusplus,no-param-reassign */
-
-import { DAY_COLOR, NIGHT_COLOR } from '../containers/ChartContainer';
-
-const CHART_DISPLAY_HEIGHT_COEFFICIENT = 0.9;
-const MAIN_LINE_JOIN = 'round';
-const X_AXIS_LINES_NUMBER = 6;
-const DATE_LABELS_NUMBER = 6;
-const GRID_COLOR_DAY = '#D4D6D7';
-const GRID_COLOR_NIGHT = '#506273';
-const TEXT_COLOR = '#7B9EA8';
-const TEXT_FONT = '30px Helvetica';
-const TEXT_MARGIN = 10;
-const DATE_MARGIN = 30;
-const GRID_LINE_WIDTH = 1;
-const LABEL_LINE_WIDTH = 3;
-const CIRCLE_RADIUS = 15;
-const CIRCLE_START_ANGLE = 0;
-const CIRCLE_END_ANGLE = 2 * Math.PI;
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-const LABEL_BOX_START_POS_COEFFICIENT = 0.8;
-const LABEL_BOX_RADIUS_COEFFICIENT = 4;
-const LABEL_BOX_WIDTH_COEFFICIENT = 4.5;
-const LABEL_BOX_HEIGHT_COEFFICIENT = 8;
+import {
+  CHART_DISPLAY_HEIGHT_COEFFICIENT,
+  DATE_LABELS_NUMBER,
+  DATE_MARGIN,
+  DAY_GRID_COLOR,
+  GRID_LINE_WIDTH,
+  LINE_JOIN,
+  MONTH_NAMES,
+  NIGHT_GRID_COLOR,
+  TEXT_COLOR,
+  TEXT_FONT,
+  TEXT_MARGIN,
+  X_AXIS_LINES_NUMBER
+} from './constants';
 
 class ChartPainter {
   paintChart = (ctx, timestamps, lines, colors, canvasHeight, lineWidth) => {
     ctx.save();
-    ctx.lineJoin = MAIN_LINE_JOIN;
+    ctx.lineJoin = LINE_JOIN;
     ctx.lineWidth = lineWidth;
     ctx.translate(0, canvasHeight);
     ctx.scale(1, -1);
@@ -50,7 +39,7 @@ class ChartPainter {
   paintCoordinateGrid = (ctx, canvasHeight, canvasWidth, max, slicedTimestamps, isNightMode) => {
     ctx.save();
     ctx.lineWidth = GRID_LINE_WIDTH;
-    ctx.strokeStyle = isNightMode ? GRID_COLOR_NIGHT : GRID_COLOR_DAY;
+    ctx.strokeStyle = isNightMode ? NIGHT_GRID_COLOR : DAY_GRID_COLOR;
     ctx.fillStyle = TEXT_COLOR;
     this.paintXAxis(ctx, canvasHeight, canvasWidth, max);
     this.paintDateLabels(ctx, canvasHeight, canvasWidth, slicedTimestamps);
@@ -100,139 +89,10 @@ class ChartPainter {
     slicedTimestamps.unshift(label);
   };
 
-  printGraphLabel = (options) => {
-    const {
-      ctx,
-      offsetX,
-      canvasHeight,
-      canvasWidth,
-      slicedTimestamps,
-      slicedLines,
-      modifiedTimestamps,
-      modifiedLines,
-      colors,
-      chartLineWidth,
-      isNightMode
-    } = options;
-
-    const timestamps = [...slicedTimestamps];
-    const label = timestamps.shift();
-    const margin = ((1 - CHART_DISPLAY_HEIGHT_COEFFICIENT) * canvasHeight) / 2;
-    const endY = canvasHeight - margin;
-
-    const step = canvasWidth / (timestamps.length - 1);
-    const index = Math.round(offsetX / step) + 1;
-    const timestampPosX = modifiedTimestamps[index];
-
-    ctx.lineWidth = GRID_LINE_WIDTH;
-    ctx.strokeStyle = isNightMode ? GRID_COLOR_NIGHT : GRID_COLOR_DAY;
-    ctx.fillStyle = isNightMode ? NIGHT_COLOR : DAY_COLOR;
-    ctx.beginPath();
-    ctx.moveTo(timestampPosX, 0);
-    ctx.lineTo(timestampPosX, endY);
-    ctx.stroke();
-
-    const startLabelContentPosY = (canvasHeight / (X_AXIS_LINES_NUMBER + 1)) * LABEL_BOX_START_POS_COEFFICIENT;
-    const radius = (startLabelContentPosY) / LABEL_BOX_RADIUS_COEFFICIENT;
-    ctx.lineWidth = LABEL_LINE_WIDTH;
-
-    const posY = LABEL_LINE_WIDTH;
-    const width = radius * slicedLines.length * LABEL_BOX_WIDTH_COEFFICIENT;
-    const height = radius * LABEL_BOX_HEIGHT_COEFFICIENT;
-    ctx.beginPath();
-    ctx.moveTo(timestampPosX, startLabelContentPosY);
-    let displayedDatePosX;
-    if (index <= timestamps.length / 2) {
-      displayedDatePosX = timestampPosX + width * 0.15;
-      const posX = timestampPosX + radius;
-      ctx.moveTo(posX + radius, posY);
-      ctx.lineTo(posX + width - radius, posY);
-      ctx.quadraticCurveTo(posX + width, posY, posX + width, posY + radius);
-      ctx.lineTo(posX + width, posY + height - radius);
-      ctx.quadraticCurveTo(posX + width, posY + height, posX + width - radius, posY + height);
-      ctx.lineTo(posX + radius, posY + height);
-      ctx.quadraticCurveTo(posX, posY + height, posX, posY + height - radius);
-      ctx.lineTo(posX, (posY + height) * 2 / 3);
-      ctx.lineTo(timestampPosX, (posY + height) / 2);
-      ctx.lineTo(posX, (posY + height) / 3);
-      ctx.lineTo(posX, posY + radius);
-      ctx.quadraticCurveTo(posX, posY, posX + radius, posY);
-    } else {
-      displayedDatePosX = timestampPosX - width * 1.05;
-      const posX = timestampPosX - radius;
-      ctx.moveTo(posX - radius, posY);
-      ctx.lineTo(posX - width + radius, posY);
-      ctx.quadraticCurveTo(posX - width, posY, posX - width, posY + radius);
-      ctx.lineTo(posX - width, posY + height - radius);
-      ctx.quadraticCurveTo(posX - width, posY + height, posX - width + radius, posY + height);
-      ctx.lineTo(posX - radius, posY + height);
-      ctx.quadraticCurveTo(posX, posY + height, posX, posY + height - radius);
-      ctx.lineTo(posX, (posY + height) * 2 / 3);
-      ctx.lineTo(timestampPosX, (posY + height) / 2);
-      ctx.lineTo(posX, (posY + height) / 3);
-      ctx.lineTo(posX, posY + radius);
-      ctx.quadraticCurveTo(posX, posY, posX - radius, posY);
-    }
-    ctx.stroke();
-    ctx.fill();
-
-    const date = new Date(slicedTimestamps[index]);
-    ctx.font = TEXT_FONT;
-    ctx.fillStyle = isNightMode ? DAY_COLOR : NIGHT_COLOR;
-    ctx.fillText(this.formatDateWithDayOfWeek(date), displayedDatePosX, (posY + height) * 0.3);
-
-    for (let i = 0; i < modifiedLines.length; i++) {
-      const revertPosY = canvasHeight - modifiedLines[i][index];
-      const compressedPosY = revertPosY * CHART_DISPLAY_HEIGHT_COEFFICIENT + margin;
-      const lineLabel = slicedLines[i][0];
-      ctx.lineWidth = chartLineWidth;
-      ctx.strokeStyle = colors[lineLabel];
-
-      ctx.beginPath();
-      ctx.moveTo(timestampPosX, compressedPosY);
-      ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS, CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
-      ctx.stroke();
-
-      ctx.fillStyle = isNightMode ? NIGHT_COLOR : DAY_COLOR;
-      ctx.beginPath();
-      ctx.moveTo(timestampPosX, compressedPosY);
-      ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS - (chartLineWidth / 2), CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
-      ctx.fill();
-
-      let displayedValue = slicedLines[i][index];
-      if (displayedValue > 1000 && displayedValue < 1000000) {
-        displayedValue = `${(displayedValue / 1000).toFixed(1)}K`;
-      }
-      if (displayedValue > 1000000) {
-        displayedValue = `${(displayedValue / 1000000).toFixed(1)}M`;
-      }
-      ctx.fillStyle = colors[lineLabel];
-      ctx.fillText(lineLabel, displayedDatePosX * (i + 1), (posY + height) * 0.6);
-      ctx.fillText(displayedValue, displayedDatePosX * (i + 1), (posY + height) * 0.9);
-
-      if (index <= 1 || index >= modifiedTimestamps.length - 1) {
-        ctx.lineWidth = chartLineWidth * 2;
-        ctx.beginPath();
-        ctx.moveTo(timestampPosX, compressedPosY - CIRCLE_RADIUS);
-        ctx.lineTo(timestampPosX, compressedPosY + CIRCLE_RADIUS);
-        ctx.stroke();
-      }
-    }
-
-    timestamps.unshift(label);
-  };
-
   formatDate = (date) => {
     const day = date.getDate();
     const monthIndex = date.getMonth();
     return `${MONTH_NAMES[monthIndex]} ${day}`;
-  };
-
-  formatDateWithDayOfWeek = (date) => {
-    const dayOfWeekIndex = date.getDay();
-    const day = date.getDate();
-    const monthIndex = date.getMonth();
-    return `${DAYS_OF_WEEK[dayOfWeekIndex]}, ${MONTH_NAMES[monthIndex]} ${day}`;
   };
 }
 

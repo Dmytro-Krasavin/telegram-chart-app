@@ -1,9 +1,9 @@
 import React from 'react';
 import { hot } from 'react-hot-loader';
-import ChartContainer from '../containers/ChartContainer';
+import ChartsPageContainer from '../containers/ChartsPageContainer';
 
 const App = () => (
-    <ChartContainer/>
+  <ChartsPageContainer/>
 );
 
 export default hot(module)(App);

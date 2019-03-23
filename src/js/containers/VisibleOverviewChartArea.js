@@ -77,6 +77,7 @@ class VisibleOverviewChartArea extends Component {
 
     const { onVisibleAreaSizingLeft, onVisibleAreaSizingRight, onVisibleAreaDrag } = this.props;
     const { resizingLeft, resizingRight, shiftX } = this.state;
+
     resizingLeft && onVisibleAreaSizingLeft(shiftX);
     resizingRight && onVisibleAreaSizingRight(shiftX);
     !(resizingLeft || resizingRight) && onVisibleAreaDrag(shiftX);

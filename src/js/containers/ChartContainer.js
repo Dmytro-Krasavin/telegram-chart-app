@@ -1,78 +1,96 @@
-/* eslint-disable no-return-assign,no-shadow */
 import React, { Component } from 'react';
-import * as chartData from '../../data/chart_data';
-import Chart from '../components/Chart';
-import SwitchModeButton from '../components/SwitchModeButton';
+import Checkbox from './Checkbox';
+import OverviewChart from './OverviewChart';
+import MainChart from './MainChart';
 
-export const DAY_COLOR = '#FFFFFF';
-export const NIGHT_COLOR = '#293340';
-const TIMESTAMP_TYPE = 'x';
-const LINE_TYPE = 'line';
+const MAIN_CHART_HEIGHT = 800;
+const OVERVIEW_CHART_HEIGHT = 120;
+const INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT = 0.75;
+const INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT = 0;
 
 class ChartContainer extends Component {
   state = {
-    chartData: [],
-    isNightMode: false,
-    isLoading: true
+    linesVisibility: this.props.initialLinesVisibility,
+    leftCoefficient: INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT,
+    rightCoefficient: INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT
   };
 
-  componentDidMount() {
-    this.loadData();
-  }
+  setVisibleCoefficients = (leftCoefficient, rightCoefficient) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      leftCoefficient: leftCoefficient,
+      rightCoefficient: rightCoefficient
+    }));
+  };
+
+  checkboxHandler = (label, checkedState) => {
+    const linesVisibility = this.state.linesVisibility;
+    linesVisibility[label] = checkedState;
+    this.setState(prevState => ({
+      ...prevState,
+      linesVisibility: linesVisibility
+    }));
+  };
+
+  linePointsToButtons = (linePoints, index, names, colors) => {
+    const label = linePoints[0];
+    const name = names[label];
+    const color = colors[label];
+    return (
+      <div key={index} className={'col-sm-3'}>
+        <Checkbox key={index}
+                  color={color}
+                  checkboxHandler={this.checkboxHandler}
+                  label={label}>{name}</Checkbox>
+      </div>
+    );
+  };
 
   render() {
-    const { isNightMode, chartData } = this.state;
-    const modeClass = isNightMode ? 'mode night' : 'mode day';
-    const chartList = chartData.map((chart, index) => this.chartDataToComponent(chart, index, isNightMode));
+    const { linesVisibility, leftCoefficient, rightCoefficient } = this.state;
+    const {
+      timestamps, lines, names, colors, isNightMode
+    } = this.props;
+    const buttons = lines.map((linePoints, index) => this.linePointsToButtons(linePoints, index, names, colors));
+
     return (
-      <div className={modeClass}>
-        <div className={'chart-page-container'}>
-          {chartList}
-          <SwitchModeButton isNightMode={isNightMode} switchModeHandler={this.switchMode}/>
+      <div className={'chart-container'}>
+        <div className={'row mb-3'}>
+          <div className={'col'}>
+            <MainChart timestamps={timestamps}
+                       lines={lines}
+                       names={names}
+                       colors={colors}
+                       linesVisibility={linesVisibility}
+                       height={MAIN_CHART_HEIGHT}
+                       leftCoefficient={leftCoefficient}
+                       rightCoefficient={rightCoefficient}
+                       setVisibleCoefficients={this.setVisibleCoefficients}
+                       isNightMode={isNightMode}
+            />
+          </div>
+        </div>
+        <div className={'row mb-3'}>
+          <div className={'col'}>
+            <OverviewChart timestamps={timestamps}
+                           lines={lines}
+                           names={names}
+                           colors={colors}
+                           linesVisibility={linesVisibility}
+                           height={OVERVIEW_CHART_HEIGHT}
+                           leftCoefficient={leftCoefficient}
+                           rightCoefficient={rightCoefficient}
+                           setVisibleCoefficients={this.setVisibleCoefficients}
+                           isNightMode={isNightMode}
+            />
+          </div>
+        </div>
+        <div className={'row mb-3'}>
+          {buttons}
         </div>
       </div>
     );
   }
-
-  loadData = () => {
-    this.setState(() => ({
-      chartData: chartData.default,
-      isLoading: false
-    }));
-  };
-
-  switchMode = (event) => {
-    event.preventDefault();
-    const currentIsNightMode = !this.state.isNightMode;
-    document.body.style.backgroundColor = currentIsNightMode ? NIGHT_COLOR : DAY_COLOR;
-    this.setState((prevState) => ({
-      ...prevState,
-      isNightMode: currentIsNightMode
-    }));
-  };
-
-  chartDataToComponent = (chart, index, isNightMode) => {
-    const {
-      columns, types, names, colors
-    } = chart;
-    const linesArray = columns.filter(column => types[column[0]] === LINE_TYPE);
-    const timestamps = columns.find(column => types[column[0]] === TIMESTAMP_TYPE);
-
-    const linesVisibility = {};
-    Object.keys(names)
-      .forEach(name => linesVisibility[name] = true);
-
-    return (
-      <Chart key={index}
-             timestamps={timestamps}
-             lines={linesArray}
-             names={names}
-             colors={colors}
-             initialLinesVisibility={linesVisibility}
-             isNightMode={isNightMode}
-      />
-    );
-  };
 }
 
 export default ChartContainer;

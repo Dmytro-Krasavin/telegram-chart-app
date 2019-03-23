@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 import React, { PureComponent } from 'react';
 
 class Checkbox extends PureComponent {
@@ -23,17 +22,14 @@ class Checkbox extends PureComponent {
     const { checked, isAnimating } = this.state;
     const { isNightMode } = this.props;
     let result = core;
-
     if (checked) {
       result += ' is-checked';
     } else {
       result += ' is-unchecked';
     }
-
     if (isAnimating) {
       result += ' do-ping';
     }
-
     if (isNightMode) {
       result += ' night';
     }

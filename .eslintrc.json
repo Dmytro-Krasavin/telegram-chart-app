@@ -11,7 +11,6 @@
     "airbnb-base/legacy"
   ],
   "rules": {
-    "class-methods-use-this": "off",
     "max-len": [
       "error",
       150

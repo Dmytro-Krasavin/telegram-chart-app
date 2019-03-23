@@ -1,94 +1,103 @@
 @import url("https://fonts.googleapis.com/css?family=Hind:500");
 
 .ui-checkbox-btn {
-  position: relative;
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 100px;
-  min-width: 200px;
-  min-height: 100px;
-  margin: 10px 50px 10px 10px;
+    position: relative;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 100px;
+    min-width: 200px;
+    min-height: 100px;
+    margin: 10px 50px 10px 10px;
 }
+
 .ui-checkbox-btn input {
-  display: none;
+    display: none;
 }
 
 .ui-checkbox-btn .icon {
-  margin-left: 10px;
-}
-.ui-checkbox-btn .text {
-  display: inline-block;
-  vertical-align: top;
-  color: inherit;
-}
-.ui-checkbox-btn .text {
-  font-size: 50px;
-  line-height: 22px;
-  margin-top: 22px;
-  margin-left: 10px;
-  padding-top: 8px;
-  padding-left: 4px;
-}
-.ui-checkbox-btn.is-unchecked {
-  border: 1px solid #7B9EA8;
-  background-color: transparent;
-  color: #7B9EA8;
-  fill: #7B9EA8;
-}
-.ui-checkbox-btn.is-checked {
-  border: 1px solid #B8B8B8;
-  color: #7B9EA8;
-  fill: #EBEBEB;
+    margin-left: 10px;
 }
 
- .ui-checkbox-btn.night {
-   background-color: #293340;
- }
+.ui-checkbox-btn .text {
+    display: inline-block;
+    vertical-align: top;
+    color: inherit;
+}
+
+.ui-checkbox-btn .text {
+    font-size: 50px;
+    line-height: 22px;
+    margin-top: 22px;
+    margin-left: 10px;
+    padding-top: 8px;
+    padding-left: 4px;
+}
+
+.ui-checkbox-btn.is-unchecked {
+    border: 1px solid #7B9EA8;
+    background-color: transparent;
+    color: #7B9EA8;
+    fill: #7B9EA8;
+}
+
+.ui-checkbox-btn.is-checked {
+    border: 1px solid #B8B8B8;
+    color: #7B9EA8;
+    fill: #EBEBEB;
+}
+
+.ui-checkbox-btn.night {
+    background-color: #293340;
+}
 
 .icon {
-  fill: #7B9EA8;
-  position: relative;
-  display: inline-block;
-  margin-top: 12px;
-  width: 60px;
-  height: 60px;
-  border: 2px solid;
-  border-radius: 50%;
+    fill: #7B9EA8;
+    position: relative;
+    display: inline-block;
+    margin-top: 12px;
+    width: 60px;
+    height: 60px;
+    border: 2px solid;
+    border-radius: 50%;
 }
+
 .icon svg {
-  position: absolute;
-  top: 5px;
-  right: 2px;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  width: 50px;
-  height: auto;
-  fill: inherit;
+    position: absolute;
+    top: 5px;
+    right: 2px;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 50px;
+    height: auto;
+    fill: inherit;
 }
+
 .is-checked .icon {
-  fill: white;
+    fill: white;
 }
 
 .ui-btn-ping {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 50%;
-  transform: translate3d(-50%, -50%, 0);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    transform: translate3d(-50%, -50%, 0);
 }
+
 .ui-btn-ping:before {
-  content: '';
-  transform: scale(0, 0);
-  transition-property: background-color transform;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  display: block;
-  padding-bottom: 100%;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.84);
+    content: '';
+    transform: scale(0, 0);
+    transition-property: background-color transform;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    display: block;
+    padding-bottom: 100%;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.84);
 }
+
 .do-ping .ui-btn-ping:before {
-  transform: scale(2.5, 2.5);
-  transition-duration: .35s;
-  background-color: rgba(255, 255, 255, 0.08);
+    transform: scale(2.5, 2.5);
+    transition-duration: .35s;
+    background-color: rgba(255, 255, 255, 0.08);
 }

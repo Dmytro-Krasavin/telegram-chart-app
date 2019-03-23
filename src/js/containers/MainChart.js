@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ChartPointModifier from '../utils/ChartPointModifier';
 import ChartPainter from '../utils/ChartPainter';
+import LabelPainter from '../utils/LabelPainter';
 
 const MAIN_LINE_WIDTH = 5;
 
@@ -101,12 +102,12 @@ class MainChart extends Component {
             chartLineWidth: MAIN_LINE_WIDTH,
             isNightMode: isNightMode
           };
-          ChartPainter.printGraphLabel(graphLabelOptions);
+          LabelPainter.printGraphLabel(graphLabelOptions);
         }
       }
     }
-    // e.stopPropagation();
-    // e.preventDefault();
+    e.stopPropagation();
+    e.preventDefault();
   };
 
   render() {
