@@ -31,14 +31,18 @@ class ChartContainer extends Component {
   };
 
   checkboxHandler = (label, checkedState) => {
-    const { linesVisibility } = this.state;
+    const { linesVisibility, mainMax, overviewMax } = this.state;
     linesVisibility[label] = checkedState;
     const dataIsAvailable = !!Object.values(linesVisibility)
       .find(visibility => visibility);
+    const newMainMax = dataIsAvailable ? mainMax : 0;
+    const newOverviewMax = dataIsAvailable ? overviewMax : 0;
     this.setState(prevState => ({
       ...prevState,
       linesVisibility: linesVisibility,
-      dataIsAvailable: dataIsAvailable
+      dataIsAvailable: dataIsAvailable,
+      mainMax: newMainMax,
+      overviewMax: newOverviewMax
     }));
   };
 
