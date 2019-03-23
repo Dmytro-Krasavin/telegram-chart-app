@@ -1,6 +1,5 @@
 .overview-canvas-container {
     touch-action: none;
-    border: 1px solid #EBEBEB;
     display: flex;
     align-content: center;
 }
