@@ -17,20 +17,6 @@ class ChartsPageContainer extends Component {
     this.loadData();
   }
 
-  render() {
-    const { isNightMode, chartData } = this.state;
-    const modeClass = isNightMode ? 'mode night' : 'mode day';
-    const chartList = chartData.map((chart, index) => this.chartDataToComponent(chart, index, isNightMode));
-    return (
-      <div className={modeClass}>
-        <div className={'chart-page-container'}>
-          {chartList}
-          <SwitchModeButton isNightMode={isNightMode} switchModeHandler={this.switchMode}/>
-        </div>
-      </div>
-    );
-  }
-
   loadData = () => {
     this.setState(() => ({
       chartData: inputChartData.default,
@@ -72,6 +58,20 @@ class ChartsPageContainer extends Component {
       />
     );
   };
+
+  render() {
+    const { isNightMode, chartData } = this.state;
+    const modeClass = isNightMode ? 'mode night' : 'mode day';
+    const chartList = chartData.map((chart, index) => this.chartDataToComponent(chart, index, isNightMode));
+    return (
+      <div className={modeClass}>
+        <div className={'chart-page-container'}>
+          {chartList}
+          <SwitchModeButton isNightMode={isNightMode} switchModeHandler={this.switchMode}/>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default ChartsPageContainer;
