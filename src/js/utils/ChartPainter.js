@@ -11,14 +11,16 @@ const GRID_COLOR_NIGHT = '#506273';
 const TEXT_COLOR = '#7B9EA8';
 const TEXT_FONT = '30px Helvetica';
 const TEXT_MARGIN = 10;
-const DATE_MARGIN = 60;
+const DATE_MARGIN = 30;
 const GRID_LINE_WIDTH = 1;
-const LABLE_LINE_WIDTH = 3;
+const LABEL_LINE_WIDTH = 3;
 const CIRCLE_RADIUS = 15;
 const CIRCLE_START_ANGLE = 0;
 const CIRCLE_END_ANGLE = 2 * Math.PI;
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+const LABEL_BOX_COEFFICIENT = 0.8;
+const LABEL_BOX_LINE_STEP_COEFFICIENT = 4;
 
 class ChartPainter {
   paintChart = (ctx, timestamps, lines, colors, canvasHeight, lineWidth) => {
@@ -128,24 +130,45 @@ class ChartPainter {
     ctx.lineTo(timestampPosX, endY);
     ctx.stroke();
 
-    const startLabelContentPosY = (canvasHeight / (X_AXIS_LINES_NUMBER + 1));
-    const lineStep = startLabelContentPosY / 4;
-    ctx.lineWidth = LABLE_LINE_WIDTH;
+    const startLabelContentPosY = (canvasHeight / (X_AXIS_LINES_NUMBER + 1)) * LABEL_BOX_COEFFICIENT;
+    const lineStep = (startLabelContentPosY) / LABEL_BOX_LINE_STEP_COEFFICIENT;
+    ctx.lineWidth = LABEL_LINE_WIDTH;
     ctx.beginPath();
     ctx.moveTo(timestampPosX, startLabelContentPosY);
-    ctx.lineTo(timestampPosX + lineStep, 3 * lineStep);
-    ctx.lineTo(timestampPosX + lineStep, lineStep);
-    ctx.quadraticCurveTo(timestampPosX + lineStep, 0, timestampPosX + 2 * lineStep, 0);
-    ctx.lineTo(timestampPosX + 12 * lineStep, 0);
-    ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, 0, timestampPosX + 13 * lineStep, lineStep);
-    ctx.lineTo(timestampPosX + 13 * lineStep, 8 * lineStep);
-    ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, 9 * lineStep, timestampPosX + 12 * lineStep, 9 * lineStep);
-    ctx.lineTo(timestampPosX + 2 * lineStep, 9 * lineStep);
-    ctx.quadraticCurveTo(timestampPosX + lineStep, 9 * lineStep, timestampPosX + lineStep, 8 * lineStep);
-    ctx.lineTo(timestampPosX + lineStep, 5 * lineStep);
+    let displayedDatePosX;
+    if (index <= timestamps.length / 2) {
+      displayedDatePosX = timestampPosX + 3 * lineStep;
+      ctx.lineTo(timestampPosX + lineStep, 3 * lineStep);
+      ctx.lineTo(timestampPosX + lineStep, lineStep);
+      ctx.quadraticCurveTo(timestampPosX + lineStep, LABEL_LINE_WIDTH, timestampPosX + 2 * lineStep, LABEL_LINE_WIDTH);
+      ctx.lineTo(timestampPosX + 12 * lineStep, LABEL_LINE_WIDTH);
+      ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, LABEL_LINE_WIDTH, timestampPosX + 13 * lineStep, lineStep);
+      ctx.lineTo(timestampPosX + 13 * lineStep, 8 * lineStep);
+      ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, 9 * lineStep, timestampPosX + 12 * lineStep, 9 * lineStep);
+      ctx.lineTo(timestampPosX + 2 * lineStep, 9 * lineStep);
+      ctx.quadraticCurveTo(timestampPosX + lineStep, 9 * lineStep, timestampPosX + lineStep, 8 * lineStep);
+      ctx.lineTo(timestampPosX + lineStep, 5 * lineStep);
+    } else {
+      displayedDatePosX = timestampPosX - 11 * lineStep;
+      ctx.lineTo(timestampPosX - lineStep, 3 * lineStep);
+      ctx.lineTo(timestampPosX - lineStep, lineStep);
+      ctx.quadraticCurveTo(timestampPosX - lineStep, LABEL_LINE_WIDTH, timestampPosX - 2 * lineStep, LABEL_LINE_WIDTH);
+      ctx.lineTo(timestampPosX - 12 * lineStep, LABEL_LINE_WIDTH);
+      ctx.quadraticCurveTo(timestampPosX - 13 * lineStep, LABEL_LINE_WIDTH, timestampPosX - 13 * lineStep, lineStep);
+      ctx.lineTo(timestampPosX - 13 * lineStep, 8 * lineStep);
+      ctx.quadraticCurveTo(timestampPosX - 13 * lineStep, 9 * lineStep, timestampPosX - 12 * lineStep, 9 * lineStep);
+      ctx.lineTo(timestampPosX - 2 * lineStep, 9 * lineStep);
+      ctx.quadraticCurveTo(timestampPosX - lineStep, 9 * lineStep, timestampPosX - lineStep, 8 * lineStep);
+      ctx.lineTo(timestampPosX - lineStep, 5 * lineStep);
+    }
     ctx.lineTo(timestampPosX, startLabelContentPosY);
     ctx.stroke();
     ctx.fill();
+
+    const date = new Date(slicedTimestamps[index]);
+    ctx.font = TEXT_FONT;
+    ctx.fillStyle = isNightMode ? DAY_COLOR : NIGHT_COLOR;
+    ctx.fillText(this.formatDateWithDayOfWeek(date), displayedDatePosX, 2.5 * lineStep);
 
     for (let i = 0; i < modifiedLines.length; i++) {
       const revertPosY = canvasHeight - modifiedLines[i][index];
@@ -159,6 +182,7 @@ class ChartPainter {
       ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS, CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
       ctx.stroke();
 
+      ctx.fillStyle = isNightMode ? NIGHT_COLOR : DAY_COLOR;
       ctx.beginPath();
       ctx.moveTo(timestampPosX, compressedPosY);
       ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS - (chartLineWidth / 2), CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
