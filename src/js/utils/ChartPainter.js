@@ -1,4 +1,4 @@
-/* eslint-disable no-plusplus */
+/* eslint-disable no-plusplus,no-param-reassign */
 
 import { DAY_COLOR, NIGHT_COLOR } from '../containers/ChartContainer';
 
@@ -19,8 +19,10 @@ const CIRCLE_START_ANGLE = 0;
 const CIRCLE_END_ANGLE = 2 * Math.PI;
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-const LABEL_BOX_COEFFICIENT = 0.8;
-const LABEL_BOX_LINE_STEP_COEFFICIENT = 4;
+const LABEL_BOX_START_POS_COEFFICIENT = 0.8;
+const LABEL_BOX_RADIUS_COEFFICIENT = 4;
+const LABEL_BOX_WIDTH_COEFFICIENT = 4.5;
+const LABEL_BOX_HEIGHT_COEFFICIENT = 8;
 
 class ChartPainter {
   paintChart = (ctx, timestamps, lines, colors, canvasHeight, lineWidth) => {
@@ -130,45 +132,54 @@ class ChartPainter {
     ctx.lineTo(timestampPosX, endY);
     ctx.stroke();
 
-    const startLabelContentPosY = (canvasHeight / (X_AXIS_LINES_NUMBER + 1)) * LABEL_BOX_COEFFICIENT;
-    const lineStep = (startLabelContentPosY) / LABEL_BOX_LINE_STEP_COEFFICIENT;
+    const startLabelContentPosY = (canvasHeight / (X_AXIS_LINES_NUMBER + 1)) * LABEL_BOX_START_POS_COEFFICIENT;
+    const radius = (startLabelContentPosY) / LABEL_BOX_RADIUS_COEFFICIENT;
     ctx.lineWidth = LABEL_LINE_WIDTH;
+
+    const posY = LABEL_LINE_WIDTH;
+    const width = radius * slicedLines.length * LABEL_BOX_WIDTH_COEFFICIENT;
+    const height = radius * LABEL_BOX_HEIGHT_COEFFICIENT;
     ctx.beginPath();
     ctx.moveTo(timestampPosX, startLabelContentPosY);
     let displayedDatePosX;
     if (index <= timestamps.length / 2) {
-      displayedDatePosX = timestampPosX + 3 * lineStep;
-      ctx.lineTo(timestampPosX + lineStep, 3 * lineStep);
-      ctx.lineTo(timestampPosX + lineStep, lineStep);
-      ctx.quadraticCurveTo(timestampPosX + lineStep, LABEL_LINE_WIDTH, timestampPosX + 2 * lineStep, LABEL_LINE_WIDTH);
-      ctx.lineTo(timestampPosX + 12 * lineStep, LABEL_LINE_WIDTH);
-      ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, LABEL_LINE_WIDTH, timestampPosX + 13 * lineStep, lineStep);
-      ctx.lineTo(timestampPosX + 13 * lineStep, 8 * lineStep);
-      ctx.quadraticCurveTo(timestampPosX + 13 * lineStep, 9 * lineStep, timestampPosX + 12 * lineStep, 9 * lineStep);
-      ctx.lineTo(timestampPosX + 2 * lineStep, 9 * lineStep);
-      ctx.quadraticCurveTo(timestampPosX + lineStep, 9 * lineStep, timestampPosX + lineStep, 8 * lineStep);
-      ctx.lineTo(timestampPosX + lineStep, 5 * lineStep);
+      displayedDatePosX = timestampPosX + width * 0.15;
+      const posX = timestampPosX + radius;
+      ctx.moveTo(posX + radius, posY);
+      ctx.lineTo(posX + width - radius, posY);
+      ctx.quadraticCurveTo(posX + width, posY, posX + width, posY + radius);
+      ctx.lineTo(posX + width, posY + height - radius);
+      ctx.quadraticCurveTo(posX + width, posY + height, posX + width - radius, posY + height);
+      ctx.lineTo(posX + radius, posY + height);
+      ctx.quadraticCurveTo(posX, posY + height, posX, posY + height - radius);
+      ctx.lineTo(posX, (posY + height) * 2 / 3);
+      ctx.lineTo(timestampPosX, (posY + height) / 2);
+      ctx.lineTo(posX, (posY + height) / 3);
+      ctx.lineTo(posX, posY + radius);
+      ctx.quadraticCurveTo(posX, posY, posX + radius, posY);
     } else {
-      displayedDatePosX = timestampPosX - 11 * lineStep;
-      ctx.lineTo(timestampPosX - lineStep, 3 * lineStep);
-      ctx.lineTo(timestampPosX - lineStep, lineStep);
-      ctx.quadraticCurveTo(timestampPosX - lineStep, LABEL_LINE_WIDTH, timestampPosX - 2 * lineStep, LABEL_LINE_WIDTH);
-      ctx.lineTo(timestampPosX - 12 * lineStep, LABEL_LINE_WIDTH);
-      ctx.quadraticCurveTo(timestampPosX - 13 * lineStep, LABEL_LINE_WIDTH, timestampPosX - 13 * lineStep, lineStep);
-      ctx.lineTo(timestampPosX - 13 * lineStep, 8 * lineStep);
-      ctx.quadraticCurveTo(timestampPosX - 13 * lineStep, 9 * lineStep, timestampPosX - 12 * lineStep, 9 * lineStep);
-      ctx.lineTo(timestampPosX - 2 * lineStep, 9 * lineStep);
-      ctx.quadraticCurveTo(timestampPosX - lineStep, 9 * lineStep, timestampPosX - lineStep, 8 * lineStep);
-      ctx.lineTo(timestampPosX - lineStep, 5 * lineStep);
+      displayedDatePosX = timestampPosX - width * 1.05;
+      const posX = timestampPosX - radius;
+      ctx.moveTo(posX - radius, posY);
+      ctx.lineTo(posX - width + radius, posY);
+      ctx.quadraticCurveTo(posX - width, posY, posX - width, posY + radius);
+      ctx.lineTo(posX - width, posY + height - radius);
+      ctx.quadraticCurveTo(posX - width, posY + height, posX - width + radius, posY + height);
+      ctx.lineTo(posX - radius, posY + height);
+      ctx.quadraticCurveTo(posX, posY + height, posX, posY + height - radius);
+      ctx.lineTo(posX, (posY + height) * 2 / 3);
+      ctx.lineTo(timestampPosX, (posY + height) / 2);
+      ctx.lineTo(posX, (posY + height) / 3);
+      ctx.lineTo(posX, posY + radius);
+      ctx.quadraticCurveTo(posX, posY, posX - radius, posY);
     }
-    ctx.lineTo(timestampPosX, startLabelContentPosY);
     ctx.stroke();
     ctx.fill();
 
     const date = new Date(slicedTimestamps[index]);
     ctx.font = TEXT_FONT;
     ctx.fillStyle = isNightMode ? DAY_COLOR : NIGHT_COLOR;
-    ctx.fillText(this.formatDateWithDayOfWeek(date), displayedDatePosX, 2.5 * lineStep);
+    ctx.fillText(this.formatDateWithDayOfWeek(date), displayedDatePosX, (posY + height) * 0.3);
 
     for (let i = 0; i < modifiedLines.length; i++) {
       const revertPosY = canvasHeight - modifiedLines[i][index];
