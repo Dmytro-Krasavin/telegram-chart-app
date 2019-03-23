@@ -71,7 +71,7 @@ class ChartPainter {
       ctx.lineTo(canvasWidth, compressedPosY);
       ctx.stroke();
 
-      const valueY = Math.floor(((((posY - GRID_LINE_WIDTH) * max / (canvasHeight * CHART_DISPLAY_HEIGHT_COEFFICIENT)))) + GRID_LINE_WIDTH);
+      const valueY = Math.floor(((((posY - GRID_LINE_WIDTH) * max / (canvasHeight)))) + GRID_LINE_WIDTH);
       let displayedValue = valueY.toString();
       if (valueY > 1000 && valueY < 1000000) {
         displayedValue = `${(valueY / 1000).toFixed(1)}K`;
@@ -198,6 +198,17 @@ class ChartPainter {
       ctx.moveTo(timestampPosX, compressedPosY);
       ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS - (chartLineWidth / 2), CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
       ctx.fill();
+
+      let displayedValue = slicedLines[i][index];
+      if (displayedValue > 1000 && displayedValue < 1000000) {
+        displayedValue = `${(displayedValue / 1000).toFixed(1)}K`;
+      }
+      if (displayedValue > 1000000) {
+        displayedValue = `${(displayedValue / 1000000).toFixed(1)}M`;
+      }
+      ctx.fillStyle = colors[lineLabel];
+      ctx.fillText(lineLabel, displayedDatePosX * (i + 1), (posY + height) * 0.6);
+      ctx.fillText(displayedValue, displayedDatePosX * (i + 1), (posY + height) * 0.9);
 
       if (index <= 1 || index >= modifiedTimestamps.length - 1) {
         ctx.lineWidth = chartLineWidth * 2;
