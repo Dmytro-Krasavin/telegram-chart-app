@@ -13,7 +13,7 @@
   "rules": {
     "max-len": [
       "error",
-      150
+      155
     ],
     "react/prop-types": "off",
     "no-plusplus": [

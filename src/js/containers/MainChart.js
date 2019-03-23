@@ -42,7 +42,7 @@ class MainChart extends Component {
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
       const {
-        timestamps, lines, colors, linesVisibility, leftCoefficient, rightCoefficient, isNightMode
+        timestamps, lines, colors, linesVisibility, leftCoefficient, rightCoefficient, isNightMode, isAnimated, animateChart, stopAnimation, initialMax
       } = this.props;
       const borderWidth = getComputedStyle(parentDiv)
         .getPropertyValue('border-width')
@@ -50,9 +50,14 @@ class MainChart extends Component {
       this.graphData.slicedTimestamps = ChartPointModifier.sliceMainTimestamps(timestamps, leftCoefficient, rightCoefficient);
       this.graphData.slicedLines = ChartPointModifier.sliceMainLines(lines, leftCoefficient, rightCoefficient, linesVisibility);
       const max = ChartPointModifier.getMaxValueInLinePoints(this.graphData.slicedLines, linesVisibility);
+      if (max !== initialMax && !isAnimated) {
+        animateChart(max);
+      } else if (max === initialMax && isAnimated) {
+        stopAnimation(max);
+      }
       this.graphData.modifiedTimestamps = ChartPointModifier.modifyTimestamps(this.graphData.slicedTimestamps, canvas.width, borderWidth);
-      this.graphData.modifiedLines = ChartPointModifier.modifyLines(this.graphData.slicedLines, canvas.height, linesVisibility, max);
-      ChartPainter.paintCoordinateGrid(ctx, canvas.height, canvas.width, max, this.graphData.slicedTimestamps, isNightMode);
+      this.graphData.modifiedLines = ChartPointModifier.modifyLines(this.graphData.slicedLines, canvas.height, linesVisibility, initialMax);
+      ChartPainter.paintCoordinateGrid(ctx, canvas.height, canvas.width, initialMax, this.graphData.slicedTimestamps, isNightMode);
       ChartPainter.paintChart(ctx, this.graphData.modifiedTimestamps, this.graphData.modifiedLines, colors, canvas.height, MAIN_LINE_WIDTH);
     }
   };

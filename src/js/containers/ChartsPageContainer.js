@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import * as inputChartData from '../../data/chart_data';
 import ChartContainer from './ChartContainer';
 import SwitchModeButton from '../components/SwitchModeButton';
-import {
-  DAY_BACKGROUND_COLOR, LINE_TYPE, NIGHT_BACKGROUND_COLOR, TIMESTAMP_TYPE
-} from '../utils/constants';
+import { DAY_BACKGROUND_COLOR, LINE_TYPE, NIGHT_BACKGROUND_COLOR, TIMESTAMP_TYPE } from '../utils/constants';
 
 class ChartsPageContainer extends Component {
   state = {

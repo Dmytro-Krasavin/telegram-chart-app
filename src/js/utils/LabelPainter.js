@@ -45,6 +45,7 @@ class LabelPainter {
     const index = Math.round(offsetX / step) + 1;
     const timestampPosX = modifiedTimestamps[index];
 
+    // paint label line
     ctx.lineWidth = GRID_LINE_WIDTH;
     ctx.strokeStyle = isNightMode ? NIGHT_GRID_COLOR : DAY_GRID_COLOR;
     ctx.fillStyle = isNightMode ? NIGHT_BACKGROUND_COLOR : DAY_BACKGROUND_COLOR;
@@ -57,6 +58,7 @@ class LabelPainter {
     const radius = startLabelContentPosY / LABEL_BOX_RADIUS_COEFFICIENT;
     ctx.lineWidth = LABEL_LINE_WIDTH;
 
+    // paint label box
     const posY = LABEL_LINE_WIDTH;
     const width = slicedLines.length > 2 ? radius * slicedLines.length * LABEL_BOX_WIDTH_COEFFICIENT : radius * 2.5 * LABEL_BOX_WIDTH_COEFFICIENT;
     const height = radius * LABEL_BOX_HEIGHT_COEFFICIENT;
@@ -100,11 +102,13 @@ class LabelPainter {
     ctx.stroke();
     ctx.fill();
 
+    // paint date
     const date = new Date(slicedTimestamps[index]);
     ctx.font = TEXT_FONT;
     ctx.fillStyle = isNightMode ? DAY_BACKGROUND_COLOR : NIGHT_BACKGROUND_COLOR;
     ctx.fillText(this.formatDateWithDayOfWeek(date), displayedDatePosX, (posY + height) * 0.3);
 
+    // paint chart values
     for (let i = 0; i < modifiedLines.length; i++) {
       const revertPosY = canvasHeight - modifiedLines[i][index];
       const compressedPosY = revertPosY * CHART_DISPLAY_HEIGHT_COEFFICIENT + margin;
@@ -112,17 +116,20 @@ class LabelPainter {
       ctx.lineWidth = chartLineWidth;
       ctx.strokeStyle = colors[lineLabel];
 
+      // paint chart point border
       ctx.beginPath();
       ctx.moveTo(timestampPosX, compressedPosY);
       ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS, CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
       ctx.stroke();
 
+      // paint chart point body
       ctx.fillStyle = isNightMode ? NIGHT_BACKGROUND_COLOR : DAY_BACKGROUND_COLOR;
       ctx.beginPath();
       ctx.moveTo(timestampPosX, compressedPosY);
       ctx.arc(timestampPosX, compressedPosY, CIRCLE_RADIUS - (chartLineWidth / 2), CIRCLE_START_ANGLE, CIRCLE_END_ANGLE);
       ctx.fill();
 
+      // paint chart point value
       let displayedValue = slicedLines[i][index];
       if (displayedValue > 1000 && displayedValue < 1000000) {
         displayedValue = `${(displayedValue / 1000).toFixed(1)}K`;

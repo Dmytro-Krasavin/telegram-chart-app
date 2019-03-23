@@ -105,14 +105,19 @@ class OverviewChart extends Component {
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
       const {
-        timestamps, lines, colors, linesVisibility
+        timestamps, lines, colors, linesVisibility, isAnimated, animateChart, stopAnimation, initialMax
       } = this.props;
       const borderWidth = getComputedStyle(parentDiv)
         .getPropertyValue('border-width')
         .replace('px', '');
       const max = ChartPointModifier.getMaxValueInLinePoints(lines, linesVisibility);
+      if (max !== initialMax && !isAnimated) {
+        animateChart(max);
+      } else if (max === initialMax && isAnimated) {
+        stopAnimation(max);
+      }
       const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
-      const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility, max);
+      const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility, initialMax);
       ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, OVERVIEW_LINE_WIDTH);
     }
     return canvas;
