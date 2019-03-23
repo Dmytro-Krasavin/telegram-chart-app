@@ -12,7 +12,8 @@ class ChartContainer extends Component {
   state = {
     linesVisibility: this.props.initialLinesVisibility,
     leftCoefficient: INITIAL_INVISIBLE_AREA_LEFT_COEFFICIENT,
-    rightCoefficient: INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT
+    rightCoefficient: INITIAL_INVISIBLE_AREA_RIGHT_COEFFICIENT,
+    dataIsAvailable: true
   };
 
   setVisibleCoefficients = (leftCoefficient, rightCoefficient) => {
@@ -24,15 +25,18 @@ class ChartContainer extends Component {
   };
 
   checkboxHandler = (label, checkedState) => {
-    const linesVisibility = this.state.linesVisibility;
+    const { linesVisibility } = this.state;
     linesVisibility[label] = checkedState;
+    const dataIsAvailable = !!Object.values(linesVisibility)
+      .find(visibility => visibility);
     this.setState(prevState => ({
       ...prevState,
-      linesVisibility: linesVisibility
+      linesVisibility: linesVisibility,
+      dataIsAvailable: dataIsAvailable
     }));
   };
 
-  linePointsToButtons = (linePoints, index, names, colors) => {
+  linePointsToButtons = (linePoints, index, names, colors, linesVisibility) => {
     const label = linePoints[0];
     const name = names[label];
     const color = colors[label];
@@ -41,54 +45,68 @@ class ChartContainer extends Component {
         <Checkbox key={index}
                   color={color}
                   checkboxHandler={this.checkboxHandler}
-                  label={label}>{name}</Checkbox>
+                  initialChecked={linesVisibility[label]}
+                  label={label}>{name}
+        </Checkbox>
       </div>
     );
   };
 
   render() {
-    const { linesVisibility, leftCoefficient, rightCoefficient } = this.state;
+    const {
+      linesVisibility, leftCoefficient, rightCoefficient, dataIsAvailable
+    } = this.state;
     const {
       timestamps, lines, names, colors, isNightMode
     } = this.props;
-    const buttons = lines.map((linePoints, index) => this.linePointsToButtons(linePoints, index, names, colors));
-
+    const buttons = lines.map((linePoints, index) => this.linePointsToButtons(linePoints, index, names, colors, linesVisibility));
+    const noDataClass = isNightMode ? 'no-data-container night' : 'no-data-container day';
     return (
-      <div className={'chart-container'}>
-        <div className={'row mb-3'}>
-          <div className={'col'}>
-            <MainChart timestamps={timestamps}
-                       lines={lines}
-                       names={names}
-                       colors={colors}
-                       linesVisibility={linesVisibility}
-                       height={MAIN_CHART_HEIGHT}
-                       leftCoefficient={leftCoefficient}
-                       rightCoefficient={rightCoefficient}
-                       setVisibleCoefficients={this.setVisibleCoefficients}
-                       isNightMode={isNightMode}
-            />
+      dataIsAvailable
+        ? <div className={'chart-container'}>
+          <div className={'row mb-3'}>
+            <div className={'col'}>
+              <MainChart timestamps={timestamps}
+                         lines={lines}
+                         names={names}
+                         colors={colors}
+                         linesVisibility={linesVisibility}
+                         height={MAIN_CHART_HEIGHT}
+                         leftCoefficient={leftCoefficient}
+                         rightCoefficient={rightCoefficient}
+                         setVisibleCoefficients={this.setVisibleCoefficients}
+                         isNightMode={isNightMode}
+              />
+            </div>
+          </div>
+          <div className={'row mb-3'}>
+            <div className={'col'}>
+              <OverviewChart timestamps={timestamps}
+                             lines={lines}
+                             names={names}
+                             colors={colors}
+                             linesVisibility={linesVisibility}
+                             height={OVERVIEW_CHART_HEIGHT}
+                             leftCoefficient={leftCoefficient}
+                             rightCoefficient={rightCoefficient}
+                             setVisibleCoefficients={this.setVisibleCoefficients}
+                             isNightMode={isNightMode}
+              />
+            </div>
+          </div>
+          <div className={'row mb-3'}>
+            {buttons}
           </div>
         </div>
-        <div className={'row mb-3'}>
-          <div className={'col'}>
-            <OverviewChart timestamps={timestamps}
-                           lines={lines}
-                           names={names}
-                           colors={colors}
-                           linesVisibility={linesVisibility}
-                           height={OVERVIEW_CHART_HEIGHT}
-                           leftCoefficient={leftCoefficient}
-                           rightCoefficient={rightCoefficient}
-                           setVisibleCoefficients={this.setVisibleCoefficients}
-                           isNightMode={isNightMode}
-            />
+
+        : <div className={'chart-container'}>
+          <div className={noDataClass}>
+            <h1 className={'no-data-text'}>No data is available</h1>
+          </div>
+          <div className={'row mb-3'}>
+            {buttons}
           </div>
         </div>
-        <div className={'row mb-3'}>
-          {buttons}
-        </div>
-      </div>
     );
   }
 }

@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 
 class Checkbox extends PureComponent {
   state = {
-    checked: true,
+    checked: this.props.initialChecked,
     isAnimating: false
   };
 
@@ -38,7 +38,8 @@ class Checkbox extends PureComponent {
 
   render() {
     const className = this.composeStateClasses('ui-checkbox-btn');
-    const color = this.props.color;
+    const { color } = this.props;
+    const { checked } = this.state;
     const checkedStyle = {
       backgroundColor: color,
       borderColor: color
@@ -46,9 +47,9 @@ class Checkbox extends PureComponent {
 
     return (
       <div className={className} onClick={this.toggleChecked}>
-        <input className="ui ui-checkbox" type="checkbox" checked={this.state.checked} onChange={this.toggleChecked}/>
+        <input className="ui ui-checkbox" type="checkbox" checked={checked} onChange={this.toggleChecked}/>
         {
-          this.state.checked
+          checked
             ? <i className="icon" style={checkedStyle}>
               <svg width="24" height="24" viewBox="0 0 24 24">
                 <path

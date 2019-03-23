@@ -22,6 +22,33 @@
     margin-bottom: 150px;
 }
 
+.no-data-container {
+    position: relative;
+    width: 56rem;
+    height: 61rem;
+    margin-bottom: 2rem;
+    align-content: center;
+    opacity: 0.5;
+}
+
+.no-data-container.day {
+    background-color: #EBEBEB;
+    color: #506273;
+}
+
+.no-data-container.night {
+    background-color: #1D232F;
+    color: #D4D6D7;
+}
+
+.no-data-text {
+    position: absolute;
+    top: 40%;
+    left: 14%;
+    align-content: center;
+    font-size: 4rem;
+}
+
 .chart-page-container {
     width: 95%;
     max-width: 1200px;

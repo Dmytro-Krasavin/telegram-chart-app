@@ -70,18 +70,19 @@ const conf = {
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
-        test: /\.js(\?.*)?$/i,
+        include: /\.js$/,
         parallel: true,
         uglifyOptions: {
+          beautify: false,
+          comments: false,
           compress: {
             sequences: true,
-            dead_code: true,
-            conditionals: true,
             booleans: true,
+            loops: true,
             unused: true,
-            if_return: true,
-            join_vars: true,
-            drop_console: true
+            warnings: false,
+            drop_console: true,
+            unsafe: true
           }
         }
       })
