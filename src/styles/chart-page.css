@@ -57,33 +57,3 @@
     margin-left: auto;
     margin-right: auto;
 }
-
-.switch-mode-container {
-    align-content: center;
-    background-color: #FFFFFF;
-    text-align: center;
-    display: inline-block;
-    font-size: 1.25rem;
-    padding: 4rem;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border-top: 1px solid #DDDDDD;
-}
-
-.switch-mode-container.night {
-    background-color: #293340;
-    border-color: #3D4B5A;
-}
-
-.switch-mode-button {
-    text-align: center;
-    display: inline-block;
-    font-size: 3.5rem;
-    padding: .5rem .5rem 1.1rem;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}

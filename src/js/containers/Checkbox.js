@@ -13,7 +13,7 @@ class Checkbox extends PureComponent {
       checked: checkedState,
       isAnimating: true
     });
-    this.props.checkboxHandler(this.props.label, checkedState);
+    this.props.changeLineVisibility(this.props.label, checkedState);
   };
 
   ping = () => this.setState({ isAnimating: false });

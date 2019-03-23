@@ -47,7 +47,7 @@ class ChartContainer extends Component {
     }));
   };
 
-  checkboxHandler = (label, checkedState) => {
+  changeLineVisibility = (label, checkedState) => {
     const { linesVisibility, mainMax, overviewMax } = this.state;
     linesVisibility[label] = checkedState;
     const dataIsAvailable = !!Object.values(linesVisibility)
@@ -71,7 +71,7 @@ class ChartContainer extends Component {
       <div key={index} className={'col-sm-3'}>
         <Checkbox key={index}
                   color={color}
-                  checkboxHandler={this.checkboxHandler}
+                  changeLineVisibility={this.changeLineVisibility}
                   initialChecked={linesVisibility[label]}
                   label={label}>{name}
         </Checkbox>
@@ -266,7 +266,7 @@ class ChartContainer extends Component {
 
         : <div className={'chart-container'}>
           <div className={noDataClass}>
-            <h1 className={'no-data-text'}>No data is available</h1>
+            <h1 className={'no-data-text'}>No data to display</h1>
           </div>
           <div className={'row mb-3'}>
             {buttons}
