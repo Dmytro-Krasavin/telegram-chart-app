@@ -105,19 +105,32 @@ class OverviewChart extends Component {
     if (canvas.getContext) {
       const ctx = canvas.getContext('2d');
       const {
-        timestamps, lines, colors, linesVisibility, isAnimated, animateChart, stopAnimation, initialMax
+        timestamps,
+        lines,
+        colors,
+        linesVisibility,
+        isAnimated,
+        animateChart,
+        stopAnimation,
+        initialMax,
+        isFirstLoading,
+        setMaxChartValue
       } = this.props;
       const borderWidth = getComputedStyle(parentDiv)
         .getPropertyValue('border-width')
         .replace('px', '');
       const max = ChartPointModifier.getMaxValueInLinePoints(lines, linesVisibility);
-      if (max !== initialMax && !isAnimated) {
+      if (max !== initialMax && !isAnimated && !isFirstLoading) {
         animateChart(max);
       } else if (max === initialMax && isAnimated) {
         stopAnimation(max);
       }
+      if (isFirstLoading) {
+        setMaxChartValue(max);
+      }
+      const maxChartValue = isFirstLoading ? max : initialMax;
       const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
-      const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility, initialMax);
+      const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility, maxChartValue);
       ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, OVERVIEW_LINE_WIDTH);
     }
     return canvas;

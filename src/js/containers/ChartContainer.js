@@ -19,7 +19,8 @@ class ChartContainer extends Component {
     mainMax: 0,
     overviewMax: 0,
     isMainChartAnimated: false,
-    isOverviewChartAnimated: false
+    isOverviewChartAnimated: false,
+    isFirstLoading: true
   };
 
   setVisibleCoefficients = (leftCoefficient, rightCoefficient) => {
@@ -27,6 +28,22 @@ class ChartContainer extends Component {
       ...prevState,
       leftCoefficient: leftCoefficient,
       rightCoefficient: rightCoefficient
+    }));
+  };
+
+  setMainMaxValue = (max) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      mainMax: max,
+      isFirstLoading: false
+    }));
+  };
+
+  setOverviewMaxValue = (max) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      overviewMax: max,
+      isFirstLoading: false
     }));
   };
 
@@ -182,7 +199,15 @@ class ChartContainer extends Component {
 
   render() {
     const {
-      linesVisibility, leftCoefficient, rightCoefficient, dataIsAvailable, mainMax, overviewMax, isMainChartAnimated, isOverviewChartAnimated
+      linesVisibility,
+      leftCoefficient,
+      rightCoefficient,
+      dataIsAvailable,
+      mainMax,
+      overviewMax,
+      isMainChartAnimated,
+      isOverviewChartAnimated,
+      isFirstLoading
     } = this.state;
     const {
       timestamps, lines, names, colors, isNightMode
@@ -208,6 +233,8 @@ class ChartContainer extends Component {
                          animateChart={this.animateMainChart}
                          stopAnimation={this.stopMainChartAnimation}
                          isAnimated={isMainChartAnimated}
+                         isFirstLoading={isFirstLoading}
+                         setMaxChartValue={this.setMainMaxValue}
               />
             </div>
           </div>
@@ -227,6 +254,8 @@ class ChartContainer extends Component {
                              animateChart={this.animateOverviewChart}
                              stopAnimation={this.stopOverviewChartAnimation}
                              isAnimated={isOverviewChartAnimated}
+                             isFirstLoading={isFirstLoading}
+                             setMaxChartValue={this.setOverviewMaxValue}
               />
             </div>
           </div>
