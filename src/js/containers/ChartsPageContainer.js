@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as inputChartData from '../../data/chart_data';
 import ChartContainer from './ChartContainer';
 import SwitchModeButton from '../components/SwitchModeButton';
 import {
@@ -18,10 +17,16 @@ class ChartsPageContainer extends Component {
   }
 
   loadData = () => {
-    this.setState(() => ({
-      chartData: inputChartData.default,
-      isLoading: false
-    }));
+    fetch('../src/data/chart_data.json')
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        this.setState(() => ({
+          chartData: json,
+          isLoading: false
+        }));
+      });
   };
 
   switchMode = (event) => {

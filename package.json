@@ -5,7 +5,8 @@
   "main": "js/index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.development.config.js --mode development --open --hot",
-    "build": "webpack --config webpack.production.config.js --mode production",
+    "build": "webpack --config webpack.production.config.js --mode production && npm run minify",
+    "minify": "uglifyjs --compress --mangle --output ./dist/bundle.min.js -- ./dist/bundle.js",
     "fix": "eslint --fix . --ext .js src/js"
   },
   "author": "Dmitry Krasavin",

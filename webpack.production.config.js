@@ -16,7 +16,7 @@ const conf = {
 
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: '[hash]bundle.js'
+    filename: 'bundle.js'
   },
 
   devtool: false,

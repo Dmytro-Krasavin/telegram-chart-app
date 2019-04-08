@@ -11,6 +11,7 @@
     "airbnb-base/legacy"
   ],
   "rules": {
+    "linebreak-style": "off",
     "max-len": [
       "error",
       155
