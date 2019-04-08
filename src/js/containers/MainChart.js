@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
-import ChartPointModifier from '../utils/ChartPointModifier';
-import ChartPainter from '../utils/ChartPainter';
-import LabelPainter from '../utils/LabelPainter';
+import paintChart from '../utils/chartPainter';
+import printChartLabel from '../utils/labelPainter';
+import paintCoordinateGrid from '../utils/coordinateGridPainter';
+import {
+  getMaxValueInLinePoints,
+  modifyLines,
+  modifyTimestamps,
+  sliceMainLines,
+  sliceMainTimestamps
+} from '../utils/chartPointModifier';
 
 const MAIN_LINE_WIDTH = 5;
 
@@ -59,9 +66,9 @@ class MainChart extends Component {
       const borderWidth = getComputedStyle(parentDiv)
         .getPropertyValue('border-width')
         .replace('px', '');
-      this.graphData.slicedTimestamps = ChartPointModifier.sliceMainTimestamps(timestamps, leftCoefficient, rightCoefficient);
-      this.graphData.slicedLines = ChartPointModifier.sliceMainLines(lines, leftCoefficient, rightCoefficient, linesVisibility);
-      const max = ChartPointModifier.getMaxValueInLinePoints(this.graphData.slicedLines, linesVisibility);
+      this.graphData.slicedTimestamps = sliceMainTimestamps(timestamps, leftCoefficient, rightCoefficient);
+      this.graphData.slicedLines = sliceMainLines(lines, leftCoefficient, rightCoefficient, linesVisibility);
+      const max = getMaxValueInLinePoints(this.graphData.slicedLines, linesVisibility);
       if (max !== initialMax && !isAnimated && !isFirstLoading) {
         animateChart(max);
       } else if (max === initialMax && isAnimated) {
@@ -70,10 +77,10 @@ class MainChart extends Component {
       if (isFirstLoading) {
         setMaxChartValue(max);
       }
-      this.graphData.modifiedTimestamps = ChartPointModifier.modifyTimestamps(this.graphData.slicedTimestamps, canvas.width, borderWidth);
-      this.graphData.modifiedLines = ChartPointModifier.modifyLines(this.graphData.slicedLines, canvas.height, linesVisibility, initialMax);
-      ChartPainter.paintCoordinateGrid(ctx, canvas.height, canvas.width, initialMax, this.graphData.slicedTimestamps, isNightMode);
-      ChartPainter.paintChart(ctx, this.graphData.modifiedTimestamps, this.graphData.modifiedLines, colors, canvas.height, MAIN_LINE_WIDTH);
+      this.graphData.modifiedTimestamps = modifyTimestamps(this.graphData.slicedTimestamps, canvas.width, borderWidth);
+      this.graphData.modifiedLines = modifyLines(this.graphData.slicedLines, canvas.height, linesVisibility, initialMax);
+      paintCoordinateGrid(ctx, canvas.height, canvas.width, initialMax, this.graphData.slicedTimestamps, isNightMode);
+      paintChart(ctx, this.graphData.modifiedTimestamps, this.graphData.modifiedLines, colors, canvas.height, MAIN_LINE_WIDTH);
     }
   };
 
@@ -122,7 +129,7 @@ class MainChart extends Component {
             chartLineWidth: MAIN_LINE_WIDTH,
             isNightMode: isNightMode
           };
-          LabelPainter.printGraphLabel(graphLabelOptions);
+          printChartLabel(graphLabelOptions);
         }
       }
     }

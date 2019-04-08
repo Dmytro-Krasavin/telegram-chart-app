@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ChartPointModifier from '../utils/ChartPointModifier';
-import ChartPainter from '../utils/ChartPainter';
+import paintChart from '../utils/chartPainter';
 import VisibleOverviewChartArea from './VisibleOverviewChartArea';
+import { getMaxValueInLinePoints, modifyLines, modifyTimestamps } from '../utils/chartPointModifier';
 
 const VISIBLE_AREA_BORDER = 15;
 const MAX_INVISIBLE_AREA_COEFFICIENT = 0.85;
@@ -119,7 +119,7 @@ class OverviewChart extends Component {
       const borderWidth = getComputedStyle(parentDiv)
         .getPropertyValue('border-width')
         .replace('px', '');
-      const max = ChartPointModifier.getMaxValueInLinePoints(lines, linesVisibility);
+      const max = getMaxValueInLinePoints(lines, linesVisibility);
       if (max !== initialMax && !isAnimated && !isFirstLoading) {
         animateChart(max);
       } else if (max === initialMax && isAnimated) {
@@ -129,9 +129,9 @@ class OverviewChart extends Component {
         setMaxChartValue(max);
       }
       const maxChartValue = isFirstLoading ? max : initialMax;
-      const modifiedTimestamps = ChartPointModifier.modifyTimestamps(timestamps, canvas.width, borderWidth);
-      const modifiedLines = ChartPointModifier.modifyLines(lines, canvas.height, linesVisibility, maxChartValue);
-      ChartPainter.paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, OVERVIEW_LINE_WIDTH);
+      const modifiedTimestamps = modifyTimestamps(timestamps, canvas.width, borderWidth);
+      const modifiedLines = modifyLines(lines, canvas.height, linesVisibility, maxChartValue);
+      paintChart(ctx, modifiedTimestamps, modifiedLines, colors, canvas.height, OVERVIEW_LINE_WIDTH);
     }
     return canvas;
   };
