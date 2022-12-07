@@ -1,5 +1,5 @@
 The React.js-based solution for Telegram official coding competition.
-https://krasavind.gitlab.io/contest-telegram
+https://dmytro__k.gitlab.io/contest-telegram
 
 The task description:
 The goal is to develop software for showing simple charts based on input data we provide. You can use either JavaScript, Android Java or iOS Swift. 
